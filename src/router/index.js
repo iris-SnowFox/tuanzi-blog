@@ -10,18 +10,10 @@ const router = createRouter({
       component: HomeView
     },
     {
-      path: '/home',
-      name: 'home',
-      component: HomeView
-    },
-    // {
-    //   path: '/about',
-    //   name: 'about',
-    //   // route level code-splitting
-    //   // this generates a separate chunk (About.[hash].js) for this route
-    //   // which is lazy-loaded when the route is visited.
-    //   component: () => import('@/views/AboutView.vue')
-    // }
+      path: '/about',
+      name: 'about',
+      component: () => import('@/views/about.vue')
+    }
   ]
 })
 
@@ -31,12 +23,12 @@ const router = createRouter({
     from 当前导航正要离开的路由对象 (当前路由信息)
     next 函数 (控制导航行为，接一参数用以指定导航目标路由)
  */
-router.beforeEach((to, from, next) => {
-  // if (userLogin) {
-  //   next();
-  // } else {
-  //   next('/login');
-  // }
-})
+// router.beforeEach((to, from, next) => {
+//   // if (userLogin) {
+//   //   next();
+//   // } else {
+//   //   next('/login');
+//   // }
+// })
 
-export default router
+export default router;

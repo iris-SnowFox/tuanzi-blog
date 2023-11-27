@@ -1,6 +1,6 @@
 <template>
     <div class="home-frame">
-        123
+        <a>123打打</a>
     </div>
 </template>
 

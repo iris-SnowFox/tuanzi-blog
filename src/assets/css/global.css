@@ -1,0 +1,112 @@
+/* 重置HTML默认内外边距 */
+* {
+    padding: 0;
+    margin: 0;
+}
+
+/* 取消默认边框 */
+div,
+dl,
+dt,
+dd,
+form,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+img,
+ol,
+ul,
+li,
+table,
+th,
+td,
+p,
+span,
+a {
+    border: 0;
+}
+
+/* 设置图片与输入框无边框且垂直居中 */
+img,
+input {
+    border: none;
+    vertical-align: middle;
+}
+
+/* 字体、字号、背景、字色 */
+body {
+    min-height: 100vh;
+    font-family: Tahoma, Arial, Helvetica, "宋体";
+    font-size: 12px;
+    color: #333;
+    background: #FFF;
+    transition:
+        color 0.5s,
+        background-color 0.5s;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* 滚动条 */
+html {
+    overflow-y: scroll;
+}
+
+::-webkit-scrollbar {
+    width: 0px !important;
+}
+
+/* ul与ol前方符号清除 */
+ul,
+ol {
+    list-style-type: none;
+}
+
+th,
+td,
+input {
+    font-size: 12px;
+}
+
+h3 {
+    font-size: 14px;
+}
+
+/* 按钮边框取消，点击手势，背景色透明 */
+button {
+    border: none;
+    cursor: pointer;
+    background-color: transparent;
+}
+
+/* select标签美化 */
+/* select {
+    border-width: 1px;
+    _zoom: 1;
+    border-style: solid;
+    padding-top: 2px;
+} */
+
+/* 高度塌陷解决类 */
+.clearfix::before,
+.clearfix::after {
+    content: "";
+    display: table;
+    clear: both;
+}
+
+/* 链接 */
+a:link,
+a:visited {
+    text-decoration: none;
+}
+
+a:hover,
+a:active {
+    /* text-decoration: underline; */
+    color: #f60;
+}
