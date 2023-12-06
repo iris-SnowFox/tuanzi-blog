@@ -35,6 +35,7 @@ export default defineConfig({
   },
   build: {
     gzip: true,
+    assetsDir: 'assets',
   },
   // optimizeDeps: {
   //   force: true // 强制进行依赖预构建

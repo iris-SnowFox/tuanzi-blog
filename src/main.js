@@ -2,6 +2,7 @@ import './assets/css/global.css'
 
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
+import "@icon-park/vue-next/styles/index.css";
 
 import App from './App.vue'
 import router from './router'
