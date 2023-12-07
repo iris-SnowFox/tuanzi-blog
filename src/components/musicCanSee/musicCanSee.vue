@@ -1,7 +1,7 @@
 <template>
     <div class="music-frame">
         <div class="music-img-canva">
-            <img :src="audioImg" alt="音乐" ref="image" draggable="false">
+            <img :src="audioImg" onerror="src/assets/images/musicImg/maomao.png" alt="音乐" ref="image" draggable="false">
             <canvas :style="`opacity: ${props.opacity};`"></canvas>
         </div>
         <div class="audio-box">
@@ -10,13 +10,13 @@
                 <play-cycle theme="multi-color" size="18" :fill="['#2a2a2a', '#ffebef', '#2a2a2a', '#ffffff']"
                     strokeLinejoin="bevel" class="icon-same-style" v-show="playWayList[playWayFlag] === 'playCycle'"
                     @click="goToNextPlayWay" />
-                <loop-once theme="multi-color" size="20" :fill="['#2a2a2a', '#ffebef', '#2a2a2a', '#ffffff']"
+                <loop-once theme="multi-color" size="18" :fill="['#2a2a2a', '#ffebef', '#2a2a2a', '#ffffff']"
                     strokeLinejoin="bevel" class="icon-same-style" v-show="playWayList[playWayFlag] === 'loopOnce'"
                     @click="goToNextPlayWay" />
-                <play-once theme="multi-color" size="20" :fill="['#2a2a2a', '#ffebef', '#2a2a2a', '#ffffff']"
+                <play-once theme="multi-color" size="18" :fill="['#2a2a2a', '#ffebef', '#2a2a2a', '#ffffff']"
                     strokeLinejoin="bevel" class="icon-same-style" v-show="playWayList[playWayFlag] === 'playOnce'"
                     @click="goToNextPlayWay" />
-                <shuffle-one theme="multi-color" size="20" :fill="['#2a2a2a', '#ffebef', '#2a2a2a', '#ffffff']"
+                <shuffle-one theme="multi-color" size="18" :fill="['#2a2a2a', '#ffebef', '#2a2a2a', '#ffffff']"
                     strokeLinejoin="bevel" class="icon-same-style" v-show="playWayList[playWayFlag] === 'shuffle'"
                     @click="goToNextPlayWaySpecial" />
 
@@ -49,7 +49,7 @@
 
                 <!-- 音乐列表 -->
                 <music-list theme="multi-color" size="20" :fill="['#2a2a2a', '#ffebef', '#2a2a2a', '#ffffff']"
-                    strokeLinejoin="bevel" class="icon-same-style" v-show="!isSoundChangeOn" />
+                    strokeLinejoin="bevel" class="icon-same-style" v-show="!isSoundChangeOn" @click="musicListOnOrOff" />
 
                 <!-- 更多 -->
                 <more theme="multi-color" size="20" :fill="['#2a2a2a', '#ffebef', '#2a2a2a', '#ffffff']"
@@ -62,6 +62,33 @@
             <audio ref="audio">
                 <source :src="audioSrc" type="audio/mpeg">
             </audio>
+        </div>
+        <div class="music-list-frame" ref="musicListControl">
+            <div class="music-list" v-for="(list, index) in musicNowList" :key="index">
+                <div class="list-box now-go-music" v-if="list.src === audioSrc" @mouseenter="mouseInOneMusic(index)"
+                    @mouseleave="mouseOutOneMusic(index)">
+                    <div class="music-img-box" @click="audioPlayOrStop()">
+                        <div class="black-hover" v-show="list.isBlackHoverOn"></div>
+                        <play-one theme="multi-color" size="30" :fill="['#2a2a2a', '#ffebef', '#2a2a2a', '#ffffff']"
+                            strokeLinejoin="bevel" class="out-img" v-if="!isGo" v-show="list.isBlackHoverOn" />
+                        <pause theme="multi-color" size="30" :fill="['#2a2a2a', '#ffebef', '#2a2a2a', '#ffffff']"
+                            strokeLinejoin="bevel" v-else class="out-img" v-show="list.isBlackHoverOn" />
+                        <img :src="list.img" alt="音乐" draggable="false">
+                    </div>
+                    <div class="music-name">{{ list.name }}</div>
+                </div>
+                <div class="list-box" v-else @mouseenter="mouseInOneMusic(index)" @mouseleave="mouseOutOneMusic(index)">
+                    <div class="music-img-box" @click="audioPlayTo(index)">
+                        <div class="black-hover" v-show="list.isBlackHoverOn"></div>
+                        <play-one theme="multi-color" size="30" :fill="['#2a2a2a', '#ffebef', '#2a2a2a', '#ffffff']"
+                            strokeLinejoin="bevel" class="out-img" v-if="!isGo" v-show="list.isBlackHoverOn" />
+                        <pause theme="multi-color" size="30" :fill="['#2a2a2a', '#ffebef', '#2a2a2a', '#ffffff']"
+                            strokeLinejoin="bevel" v-else v-show="list.isBlackHoverOn" class="out-img" />
+                        <img :src="list.img" alt="音乐" draggable="false">
+                    </div>
+                    <div class="music-name">{{ list.name }}</div>
+                </div>
+            </div>
         </div>
     </div>
 </template>
@@ -89,6 +116,7 @@ import {
             必传:
                 src 链接
                 img 图片链接
+                name 音乐名
             可选:
                 musicColor 频谱颜色
     可选:
@@ -106,6 +134,8 @@ const progress = ref(null); // progress dom
 const soundFrame = ref(null); // soundFrame dom
 const soundChangeDiv = ref(null); // soundChange dom
 const soundNowDiv = ref(null); // soundNowDiv dom
+const musicListControl = ref(null); // musicList dom
+const musicNowList = computed(() => props.audioSource); // music列表
 const audioIndex = ref(0); // audio 下标
 const audioSrc = computed(() => props.audioSource[audioIndex.value].src); // audio 路径
 const audioImg = computed(() => props.audioSource[audioIndex.value].img); // audio 图
@@ -114,11 +144,12 @@ const cvs = ref({}); // canvas
 const ctx = ref({}); // canvas type
 let isInit = false; // 是否初始化
 let dataArray, analyser; // 音频数据数组 / 分析器
-const isGo = ref(false); // 是否播放标识符
 const playWayFlag = ref(0); // 当前播放方式标识符
 const playWayList = ref(["playCycle", "loopOnce", "playOnce", "shuffle"]); // 播放方式存放列表
+const isGo = ref(false); // 是否播放标识符
 const isSoundOn = ref(true); // 声音是否开启
 const isSoundChangeOn = ref(false); // 音量控制条是否开启
+const isMusicListOn = ref(false); // 音乐列表是否开启
 const firstOffsetX = ref(0); // 鼠标点击初始位置（相对组件）
 const mouseOffsetX = ref(0); // 鼠标位移至位置（相对组件）
 
@@ -134,6 +165,11 @@ onMounted(() => {
     if (props.audioSource[audioIndex.value].musicColor) {
         musicColor.value = props.audioSource[audioIndex.value].musicColor;
     }
+    // 添加为音乐列表数组添加黑幕控制属性
+    musicNowList.value.forEach(element => {
+        element = { ...element, isBlackHoverOn: false };
+    })
+
     audio.value.addEventListener('play', onPlay);
     audio.value.addEventListener('pause', onPause);
     audio.value.addEventListener('ended', onEnded);
@@ -250,17 +286,31 @@ function draw() {
     }
 }
 
-// 切换播放方式
 function goToNextPlayWay() {
+    // 切换播放方式
     playWayFlag.value += 1;
 }
-// 最后一个切换
 function goToNextPlayWaySpecial() {
+    // 最后一个切换
     playWayFlag.value = 0;
 }
 async function audioPlayGo() {
     // 开始播放
     await audio.value.play(); // 音频,启动!
+}
+async function audioPlayOrStop() {
+    // 音频启动与暂停
+    if (isGo.value === false) {
+        await audio.value.play(); // 音频,启动!
+    } else {
+        await audio.value.pause(); // 音频,暂停!
+    }
+}
+async function audioPlayTo(index) {
+    // 切换播放
+    audioIndex.value = index;
+    await audio.value.load();
+    await audio.value.play();
 }
 async function audioPlayStop() {
     // 暂停播放
@@ -285,6 +335,25 @@ async function goToNext() {
     }
     await audio.value.load();
     await audio.value.play();
+}
+function musicListOnOrOff() {
+    //开启/关闭音乐列表
+    isMusicListOn.value = !isMusicListOn.value;
+    if (isMusicListOn.value === true) {
+        musicListControl.value.style.top = "70px";
+        musicListControl.value.style.maxHeight = "163px";
+    } else {
+        musicListControl.value.style.maxHeight = "0px";
+        musicListControl.value.style.top = "60px";
+    }
+}
+function mouseInOneMusic(index) {
+    // 移入开启黑幕
+    musicNowList.value[index].isBlackHoverOn = true;
+}
+function mouseOutOneMusic(index) {
+    // 移入关闭黑幕
+    musicNowList.value[index].isBlackHoverOn = false;
 }
 
 function changeSoundOn() {
@@ -357,7 +426,6 @@ function dragAudioProgress() {
 }
 function clickMouseMoveOfProgress(event) {
     mouseOffsetX.value = event.offsetX; // 拖动位置
-    console.log(mouseOffsetX.value);
     const progressBarWidth = progressBar.value.clientWidth; // 总进度宽度
     const progressPercentage = (mouseOffsetX.value / progressBarWidth); // 进度调整百分比
     const newTime = progressPercentage * audio.value.duration; // 计算真实时间位置
@@ -474,7 +542,7 @@ function dragProgressUp() {
             flex: 1;
             margin-left: 20px;
             cursor: pointer;
-            width: 100%;
+            width: calc(100% - 20px);
             height: 5px;
 
             .progress {
@@ -482,6 +550,83 @@ function dragProgressUp() {
                 height: 100%;
                 background: linear-gradient(to right, white, v-bind(musicColor));
                 border-radius: 24px;
+            }
+        }
+    }
+
+    .music-list-frame {
+        position: absolute;
+        overflow-y: scroll;
+        top: 60px;
+        left: 35px;
+        padding: 2px;
+        width: 220px;
+        max-height: 0px;
+        border: 5px solid black;
+        border-top: 0px;
+        transition: all 0.5s ease;
+
+        .music-list {
+
+            &:not(:last-child) {
+                margin-bottom: 2px;
+            }
+
+            .list-box {
+                display: flex;
+                align-items: center;
+
+                &:hover {
+                    background: linear-gradient(to right, rgb(255, 209, 209), white);
+                }
+
+                .music-img-box {
+                    position: relative;
+
+                    .black-hover {
+                        position: absolute;
+                        cursor: pointer;
+                        width: 54px;
+                        height: 54px;
+                        background: #2a2a2a30;
+                    }
+
+                    .out-img {
+                        position: absolute;
+                        cursor: pointer;
+                        left: 50%;
+                        top: 50%;
+                        transform: translate(-50%, -50%);
+                    }
+
+                    img {
+                        user-select: none;
+                        cursor: pointer;
+                        width: 50px;
+                        height: 50px;
+                        border: 2px solid black;
+                    }
+                }
+
+                .music-name {
+                    margin-left: 10px;
+                    cursor: default;
+                    max-width: 120px;
+                    text-overflow: ellipsis;
+                    overflow: hidden;
+                    word-break: break-all;
+                    white-space: nowrap;
+                    font-size: 14px;
+                    font-weight: 600;
+                }
+            }
+
+            .now-go-music {
+                background: linear-gradient(to right, rgb(255, 209, 209), white);
+
+                .music-name {
+                    color: #ff7676;
+                }
             }
         }
     }
