@@ -1,10 +1,10 @@
 <template>
     <div class="music-frame">
-        <div class="music-img-canva">
+        <div class="music-img-canva" @click="showControlFrame">
             <img :src="audioImg" onerror="src/assets/images/musicImg/maomao.png" alt="音乐" ref="image" draggable="false">
             <canvas :style="`opacity: ${props.opacity};`"></canvas>
         </div>
-        <div class="audio-box">
+        <div class="audio-box" ref="audioBox">
             <div class="audio-icon-list">
                 <!-- 播放方式 -->
                 <play-cycle theme="multi-color" size="18" :fill="['#2a2a2a', '#ffebef', '#2a2a2a', '#ffffff']"
@@ -51,9 +51,9 @@
                 <music-list theme="multi-color" size="20" :fill="['#2a2a2a', '#ffebef', '#2a2a2a', '#ffffff']"
                     strokeLinejoin="bevel" class="icon-same-style" v-show="!isSoundChangeOn" @click="musicListOnOrOff" />
 
-                <!-- 更多 -->
-                <more theme="multi-color" size="20" :fill="['#2a2a2a', '#ffebef', '#2a2a2a', '#ffffff']"
-                    strokeLinejoin="bevel" class="icon-same-style" v-show="!isSoundChangeOn" />
+                <!-- 分享 -->
+                <share-one theme="multi-color" size="20" :fill="['#2a2a2a', '#ffebef', '#2a2a2a', '#ffffff']"
+                    strokeLinejoin="bevel" class="icon-same-style" v-show="!isSoundChangeOn" @click="getHTMLUrl" />
             </div>
 
             <div class="progress-bar" ref="progressBar" @mousedown="dragAudioProgress" @click="setAudioProgress">
@@ -81,9 +81,7 @@
                     <div class="music-img-box" @click="audioPlayTo(index)">
                         <div class="black-hover" v-show="list.isBlackHoverOn"></div>
                         <play-one theme="multi-color" size="30" :fill="['#2a2a2a', '#ffebef', '#2a2a2a', '#ffffff']"
-                            strokeLinejoin="bevel" class="out-img" v-if="!isGo" v-show="list.isBlackHoverOn" />
-                        <pause theme="multi-color" size="30" :fill="['#2a2a2a', '#ffebef', '#2a2a2a', '#ffffff']"
-                            strokeLinejoin="bevel" v-else v-show="list.isBlackHoverOn" class="out-img" />
+                            strokeLinejoin="bevel" class="out-img" v-show="list.isBlackHoverOn" />
                         <img :src="list.img" alt="音乐" draggable="false">
                     </div>
                     <div class="music-name">{{ list.name }}</div>
@@ -94,7 +92,7 @@
 </template>
 
 <script setup>
-import { computed, onMounted, ref, watch } from 'vue';
+import { computed, nextTick, onMounted, ref, watch } from 'vue';
 import {
     PlayCycle,
     LoopOnce,
@@ -107,7 +105,7 @@ import {
     VolumeSmall,
     VolumeMute,
     MusicList,
-    More,
+    ShareOne,
 } from "@icon-park/vue-next";
 
 /*
@@ -127,6 +125,7 @@ const props = defineProps({
     opacity: Number,
 });
 
+const audioBox = ref(null); // audioBox dom
 const image = ref(null); // img dom
 const audio = ref(null); // audio dom
 const progressBar = ref(null); // progressBar dom
@@ -146,10 +145,12 @@ let isInit = false; // 是否初始化
 let dataArray, analyser; // 音频数据数组 / 分析器
 const playWayFlag = ref(0); // 当前播放方式标识符
 const playWayList = ref(["playCycle", "loopOnce", "playOnce", "shuffle"]); // 播放方式存放列表
+const isAudioControlOn = ref(false); // 音频控制面板是否开启
 const isGo = ref(false); // 是否播放标识符
 const isSoundOn = ref(true); // 声音是否开启
 const isSoundChangeOn = ref(false); // 音量控制条是否开启
 const isMusicListOn = ref(false); // 音乐列表是否开启
+const isMusicListLoad = ref(false); // 音乐列表是否加载
 const firstOffsetX = ref(0); // 鼠标点击初始位置（相对组件）
 const mouseOffsetX = ref(0); // 鼠标位移至位置（相对组件）
 
@@ -286,6 +287,35 @@ function draw() {
     }
 }
 
+function showControlFrame() {
+    // 打开/关闭控制面板
+    isAudioControlOn.value = !isAudioControlOn.value;
+    if (isAudioControlOn.value === true) {
+        audioBox.value.style.width = "250px";
+        audioBox.value.style.boxShadow = "0 0 2px rgb(25, 25, 25)";
+        musicListControl.value.style.width = "220px";
+    } else {
+        if (isMusicListLoad.value === true) {
+            musicListOnOrOff();
+            nextTick(() => {
+                setTimeout(function () {
+                    musicListControl.value.style.width = "0px";
+                }, 500);
+                setTimeout(function () {
+                    audioBox.value.style.boxShadow = "0 0 0px rgb(25, 25, 25)";
+                    audioBox.value.style.width = "0px";
+                }, 800);
+            })
+        } else {
+            musicListControl.value.style.width = "0px";
+            setTimeout(function () {
+                audioBox.value.style.boxShadow = "0 0 0px rgb(25, 25, 25)";
+                audioBox.value.style.width = "0px";
+            }, 300);
+        }
+    }
+}
+
 function goToNextPlayWay() {
     // 切换播放方式
     playWayFlag.value += 1;
@@ -340,11 +370,17 @@ function musicListOnOrOff() {
     //开启/关闭音乐列表
     isMusicListOn.value = !isMusicListOn.value;
     if (isMusicListOn.value === true) {
-        musicListControl.value.style.top = "70px";
-        musicListControl.value.style.maxHeight = "163px";
+        isMusicListLoad.value = true;
+        nextTick(() => {
+            musicListControl.value.style.top = "70px";
+            musicListControl.value.style.maxHeight = "178px";
+        })
     } else {
         musicListControl.value.style.maxHeight = "0px";
         musicListControl.value.style.top = "60px";
+        nextTick(() => {
+            isMusicListLoad.value = false;
+        })
     }
 }
 function mouseInOneMusic(index) {
@@ -425,6 +461,7 @@ function dragAudioProgress() {
     document.addEventListener("mouseup", dragProgressUp);
 }
 function clickMouseMoveOfProgress(event) {
+    // 拖动调整进度条
     mouseOffsetX.value = event.offsetX; // 拖动位置
     const progressBarWidth = progressBar.value.clientWidth; // 总进度宽度
     const progressPercentage = (mouseOffsetX.value / progressBarWidth); // 进度调整百分比
@@ -432,22 +469,33 @@ function clickMouseMoveOfProgress(event) {
     audio.value.currentTime = newTime; // 赋给当前时间
 }
 function dragProgressUp() {
+    // 结束拖动进度条
     progressBar.value.removeEventListener('mousemove', clickMouseMoveOfProgress);
     document.removeEventListener('mouseup', dragProgressUp);
+}
+
+function getHTMLUrl() {
+    // 获取url
+    const url = window.location.href;
+    navigator.clipboard.writeText(url);
 }
 </script>
 
 <style lang="scss" scoped>
+$main-border: 5px solid #2a2a2a;
+
 .music-frame {
     position: relative;
 
     .music-img-canva {
         z-index: 99;
         position: relative;
+        cursor: pointer;
         width: 60px;
         height: 60px;
-        border: 5px solid #2a2a2a;
+        border: $main-border;
         border-radius: 50%;
+        box-shadow: 0 0 4px black;
         overflow: hidden;
 
         img {
@@ -488,13 +536,14 @@ function dragProgressUp() {
         left: 35px;
         display: flex;
         flex-direction: column;
-        width: 250px;
+        width: 0px;
         height: 60px;
         background-color: white;
-        border: 5px solid #2a2a2a;
+        border: $main-border;
         border-left: 0px;
         border-radius: 0 24px 24px 0;
         overflow: hidden;
+        transition: all 0.4s ease;
 
         .audio-icon-list {
             padding-left: 35px;
@@ -502,6 +551,8 @@ function dragProgressUp() {
             display: flex;
             justify-content: space-around;
             align-items: center;
+            width: 215px;
+            overflow:hidden;
 
             .icon-same-style {
                 cursor: pointer;
@@ -558,13 +609,14 @@ function dragProgressUp() {
         position: absolute;
         overflow-y: scroll;
         top: 60px;
-        left: 35px;
+        left: 30px;
         padding: 2px;
-        width: 220px;
+        width: 0px;
         max-height: 0px;
-        border: 5px solid black;
+        border: $main-border;
         border-top: 0px;
-        transition: all 0.5s ease;
+        box-shadow: 0 0 2px rgb(55, 55, 55);
+        transition: all 0.6s ease;
 
         .music-list {
 
@@ -588,7 +640,7 @@ function dragProgressUp() {
                         cursor: pointer;
                         width: 54px;
                         height: 54px;
-                        background: #2a2a2a30;
+                        background: #2a2a2a20;
                     }
 
                     .out-img {
@@ -604,7 +656,7 @@ function dragProgressUp() {
                         cursor: pointer;
                         width: 50px;
                         height: 50px;
-                        border: 2px solid black;
+                        border: 4px double rgb(116, 116, 116);
                     }
                 }
 
