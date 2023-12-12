@@ -1,7 +1,7 @@
 <template>
     <div class="music-frame">
         <div class="music-img-canva" @click="showControlFrame">
-            <img :src="audioImg" onerror="src/assets/images/musicImg/maomao.png" alt="音乐" ref="image" draggable="false">
+            <img :src="audioImg" onerror="errorImgFunction()" alt="音乐" ref="image" draggable="false">
             <canvas :style="`opacity: ${props.opacity};`"></canvas>
         </div>
         <div class="audio-box" ref="audioBox">
@@ -181,6 +181,10 @@ onMounted(() => {
     initCvs();
     draw();
 })
+
+function errorImgFunction() {
+    console.log("加载图片失败");
+}
 
 // 音频播放开始
 function onPlay() {
@@ -502,6 +506,7 @@ $main-border: 5px solid #2a2a2a;
             user-select: none;
             width: 60px;
             height: 60px;
+            background: white;
             border-radius: 50%;
         }
 
