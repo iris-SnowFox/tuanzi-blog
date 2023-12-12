@@ -2,11 +2,28 @@
     <div class="home-frame">
         <musicCanSee :audioSource="audioSource" :opacity="0.7"></musicCanSee>
     </div>
+    <button @click="openMsgSuccess()">点我一下</button>
+    <button @click="openMsgWarning()">点我一下</button>
+    <button @click="openMsgError()">点我一下</button>
+    <button @click="openMsgInfo()">点我一下</button>
 </template>
 
 <script setup>
 import musicCanSee from '@/components/musicCanSee/musicCanSee.vue';
+import { useMessage } from '@/utils/message.jsx';
 import { ref } from 'vue';
+function openMsgSuccess() {
+    useMessage('success');
+}
+function openMsgWarning() {
+    useMessage('warning');
+}
+function openMsgError() {
+    useMessage('error');
+}
+function openMsgInfo() {
+    useMessage();
+}
 const audioSource = ref([{
     src: 'src/assets/music/星と君が消えた日.mp3',
     img: 'src/assets/images/musicImg/maomao.png',

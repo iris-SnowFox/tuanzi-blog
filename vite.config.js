@@ -1,12 +1,13 @@
 import { fileURLToPath, URL } from 'node:url'
 
 import { defineConfig } from 'vite'
+import vueJsx from '@vitejs/plugin-vue-jsx'
 import vue from '@vitejs/plugin-vue'
 
-// https://vitejs.dev/config/
 export default defineConfig({
   plugins: [
     vue(),
+    vueJsx(),
   ],
   // base: '/tuanziBlog' // 开发或生产环境服务的公共基础路径
   css: {
@@ -32,6 +33,15 @@ export default defineConfig({
     //     rewrite: (path) => path.replace(/^\/api/, '')
     //   }
     // }, 
+    static: {
+      directory: [
+        {
+          // 添加 utils 包的路径
+          root: './src/utils',
+          prefix: '/utils/'
+        },
+      ],
+    },
   },
   build: {
     gzip: true,

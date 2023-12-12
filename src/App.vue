@@ -1,5 +1,6 @@
 <template>
   <div id="app">
+    <div id="message-frame"></div>
     <router-view></router-view>
   </div>
 </template>
@@ -20,4 +21,14 @@
 </script>
 
 
-<style scoped></style>
+<style scoped>
+#message-frame {
+  position: fixed;
+  top: 0;
+  left: 50%;
+  transform: translate(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+</style>
