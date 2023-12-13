@@ -97,7 +97,7 @@ export function useMessage(form, msg) {
     setTimeout(() => {
         div.style.opacity = "0.6";
         div.style.transform = "translateY(0px)";
-    }, 0);
+    }, 100);
 
     setTimeout(() => {
         div.style.opacity = "0";

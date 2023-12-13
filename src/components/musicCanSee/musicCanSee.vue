@@ -93,6 +93,7 @@
 
 <script setup>
 import { computed, nextTick, onMounted, ref, watch } from 'vue';
+import { useMessage } from '@/utils/message.jsx';
 import {
     PlayCycle,
     LoopOnce,
@@ -478,10 +479,15 @@ function dragProgressUp() {
     document.removeEventListener('mouseup', dragProgressUp);
 }
 
-function getHTMLUrl() {
+async function getHTMLUrl() {
     // 获取url
     const url = window.location.href;
-    navigator.clipboard.writeText(url);
+    try {
+        await navigator.clipboard.writeText(url);
+        useMessage("success", "复制成功");
+    } catch (error) {
+        useMessage("error", error);
+    }
 }
 </script>
 
@@ -557,7 +563,7 @@ $main-border: 5px solid #2a2a2a;
             justify-content: space-around;
             align-items: center;
             width: 215px;
-            overflow:hidden;
+            overflow: hidden;
 
             .icon-same-style {
                 cursor: pointer;
