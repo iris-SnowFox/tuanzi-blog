@@ -1,5 +1,5 @@
 <template>
-    <div class="music-frame">
+    <div class="music-frame" ref="musicBall" @mouseenter="allOfMusicBall" @mouseleave="halfOfMusicBall">
         <div class="music-img-canva" @click="showControlFrame">
             <img :src="audioImg" onerror="errorImgFunction()" alt="音乐" ref="image" draggable="false">
             <canvas :style="`opacity: ${props.opacity};`"></canvas>
@@ -126,6 +126,7 @@ const props = defineProps({
     opacity: Number,
 });
 
+const musicBall = ref(null); // musicBall dom
 const audioBox = ref(null); // audioBox dom
 const image = ref(null); // img dom
 const audio = ref(null); // audio dom
@@ -182,10 +183,6 @@ onMounted(() => {
     initCvs();
     draw();
 })
-
-function errorImgFunction() {
-    console.log("加载图片失败");
-}
 
 // 音频播放开始
 function onPlay() {
@@ -292,6 +289,16 @@ function draw() {
     }
 }
 
+function allOfMusicBall() {
+    // 展开音乐球
+    musicBall.value.style.left = "10px";
+}
+function halfOfMusicBall() {
+    // 遮掩音乐球
+    if (!isAudioControlOn.value) {
+        musicBall.value.style.left = "-35px";
+    }
+}
 function showControlFrame() {
     // 打开/关闭控制面板
     isAudioControlOn.value = !isAudioControlOn.value;
@@ -495,7 +502,11 @@ async function getHTMLUrl() {
 $main-border: 5px solid #2a2a2a;
 
 .music-frame {
-    position: relative;
+    position: fixed;
+    top: 40%;
+    left: -35px;
+    transform: translate(0, -50%);
+    transition: left 0.5s ease;
 
     .music-img-canva {
         z-index: 99;
