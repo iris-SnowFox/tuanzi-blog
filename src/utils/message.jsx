@@ -10,8 +10,6 @@ const MessageModel = styled('div', {
     width: 'fit-content',
     fontWeight: 'bold',
     borderRadius: "5px",
-    opacity: "0.5",
-    transition: 'all 0.5s ease',
 })
 
 const messageColorInfo = {
@@ -47,25 +45,25 @@ const MessageBox = {
         const { $props, $emit } = ctx;
         if ($props.form === "success") {
             return (
-                <MessageModel style={messageColorSuccess}>
+                <MessageModel style={messageColorSuccess} class={"message-model"}>
                     {$props.msg}
                 </MessageModel>
             );
         } else if ($props.form === "warning") {
             return (
-                <MessageModel style={messageColorWarning}>
+                <MessageModel style={messageColorWarning} class={"message-model"}>
                     {$props.msg}
                 </MessageModel>
             );
         } else if ($props.form === "error") {
             return (
-                <MessageModel style={messageColorError}>
+                <MessageModel style={messageColorError} class={"message-model"}>
                     {$props.msg}
                 </MessageModel>
             );
         } else {
             return (
-                <MessageModel style={messageColorInfo}>
+                <MessageModel style={messageColorInfo} class={"message-model"}>
                     {$props.msg}
                 </MessageModel>
             );
@@ -86,16 +84,29 @@ export function useMessage(form, msg) {
     }
     const outermostDiv = document.querySelector('#message-frame');
     const div = document.createElement('div');
+    div.style.opacity = "0";
+    div.style.transform = "translateY(-20px)";
+    div.style.transition = 'all 0.5s ease';
     outermostDiv.appendChild(div);
     const app = createApp(MessageBox, {
         form,
         msg
     });
     app.mount(div);
-    // setTimeout(() => {
-    //     app.unmount(div);
-    //     nextTick(() => {
-    //         outermostDiv.removeChild(div);
-    //     })
-    // }, 3000)
+
+    setTimeout(() => {
+        div.style.opacity = "0.6";
+        div.style.transform = "translateY(0px)";
+    }, 0);
+
+    setTimeout(() => {
+        div.style.opacity = "0";
+        div.style.transform = "translateY(-20px)";
+        setTimeout(() => {
+            app.unmount(div);
+            nextTick(() => {
+                outermostDiv.removeChild(div);
+            });
+        }, 500);
+    }, 3000);
 }
