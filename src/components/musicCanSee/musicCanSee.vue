@@ -502,6 +502,7 @@ async function getHTMLUrl() {
 $main-border: 5px solid #2a2a2a;
 
 .music-frame {
+    z-index: 99;
     position: fixed;
     top: 40%;
     left: -35px;
