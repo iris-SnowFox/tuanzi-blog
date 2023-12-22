@@ -638,6 +638,7 @@ $main-border: 5px solid #2a2a2a;
         max-height: 0px;
         border: $main-border;
         border-top: 0px;
+        background: rgb(255, 255, 255);
         box-shadow: 0 0 2px rgb(55, 55, 55);
         transition: all 0.6s ease;
 
