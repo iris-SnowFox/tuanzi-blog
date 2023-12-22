@@ -577,11 +577,6 @@ $main-border: 5px solid #2a2a2a;
             width: 215px;
             overflow: hidden;
 
-            .icon-same-style {
-                cursor: pointer;
-                border-radius: 50%;
-            }
-
             .playMusicBox {
                 .icon-special-hover-style {
                     &:hover {

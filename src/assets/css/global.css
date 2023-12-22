@@ -72,6 +72,10 @@ input {
     font-size: 12px;
 }
 
+input {
+    outline:none;
+}
+
 h3 {
     font-size: 14px;
 }

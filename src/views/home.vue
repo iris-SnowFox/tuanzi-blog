@@ -1,5 +1,6 @@
 <template>
     <fontRain :data="dataList"></fontRain>
+    <bibiChat></bibiChat>
     <!-- <header>
     </header> -->
     <!-- <main>
@@ -15,7 +16,8 @@
 </template>
 
 <script setup>
-import fontRain from '../components/fontRain/fontRain.vue';
+import fontRain from '@/components/fontRain/fontRain.vue';
+import bibiChat from '@/components/bibiChat/bibiChat.vue';
 import { useMessage } from '@/utils/message.jsx';
 import { ref } from 'vue';
 const dataList = ref([ // 字数据

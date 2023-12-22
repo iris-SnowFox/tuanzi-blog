@@ -8,7 +8,7 @@
 <script setup>
 import { computed, onMounted, ref } from "vue";
 import scss from './data.module.scss'
-const props = defineProps({ data: String });
+const props = defineProps({ data: Array });
 const fontRain = ref(null); // fontRain dom
 const dataIndex = ref(computed(() => { return parseInt(scss.pNum) })); // 数据量
 const dataAllNum = ref(computed(() => { return new Array(dataIndex.value).fill("") })); // 数据总数
@@ -60,6 +60,7 @@ function changeData(index) {
     position: fixed;
     top: 0;
     left: 0;
+    user-select: none;
     display: flex;
     justify-content: space-around;
     width: 100%;
