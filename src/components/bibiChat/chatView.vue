@@ -16,22 +16,44 @@
         <div class="chat-home">
             <ul v-for="list in chatData" :key="list.id">
                 <li class="my-words" v-if="list.id === 0">
-                    <div class="left-content">
-                        <div class="name">{{ list.name }}</div>
-                        <div class="words">
-                            <div class="content">{{ list.content }}</div>
-                            <div class="xiao-jiao"></div>
+                    <div class="just-img" v-if="list.img != undefined">
+                        <div class="left-content">
+                            <div class="name">{{ list.name }}</div>
+                            <div class="img">
+                                <img :src="list.img" alt="" class="enter-img-in-chat">
+                            </div>
                         </div>
+                        <img :src="list.avatar" alt="头像" class="avatar">
                     </div>
-                    <img :src="list.avatar" alt="头像">
+                    <div class="just-words" v-if="list.content != undefined">
+                        <div class="left-content">
+                            <div class="name">{{ list.name }}</div>
+                            <div class="words">
+                                <div class="content">{{ list.content }}</div>
+                                <div class="xiao-jiao"></div>
+                            </div>
+                        </div>
+                        <img :src="list.avatar" alt="头像" class="avatar">
+                    </div>
                 </li>
                 <li class="others-words" v-else>
-                    <img :src="list.avatar" alt="头像">
-                    <div class="right-content">
-                        <div class="name">{{ list.name }}</div>
-                        <div class="words">
-                            <div class="xiao-jiao"></div>
-                            <div class="content">{{ list.content }}</div>
+                    <div class="just-img" v-if="list.img != undefined">
+                        <img :src="list.avatar" alt="头像" class="avatar">
+                        <div class="right-content">
+                            <div class="name">{{ list.name }}</div>
+                            <div class="img">
+                                <img :src="list.img" alt="">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="just-words" v-if="list.content != undefined">
+                        <img :src="list.avatar" alt="头像" class="avatar">
+                        <div class="right-content">
+                            <div class="name">{{ list.name }}</div>
+                            <div class="words">
+                                <div class="xiao-jiao"></div>
+                                <div class="content">{{ list.content }}</div>
+                            </div>
                         </div>
                     </div>
                 </li>
@@ -41,16 +63,23 @@
             <div class="chat-use-icon-list">
                 <div class="emoji">
                     <ConfoundedFace theme="multi-color" size="20" :fill="['#2a2a2a', '#ffebef', '#2a2a2a', '#ffffff']"
-                        strokeLinejoin="bevel" class="icon-same-style" />
-                    <dropDownOfEmoji></dropDownOfEmoji>
+                        strokeLinejoin="bevel" class="icon-same-style" @click="openOrCloseEmojiList"
+                        @mousedown="delFocusMissing" />
+                    <dropDownOfEmoji v-model:isShow="isShowEmojiList" :emoji="emoji" @addEmojiToInput="addEmojiToInput">
+                    </dropDownOfEmoji>
                 </div>
-                <Pic theme="multi-color" size="20" :fill="['#2a2a2a', '#ffebef', '#2a2a2a', '#ffffff']"
-                    strokeLinejoin="bevel" class="icon-same-style" />
+                <div class="get-img">
+                    <Pic theme="multi-color" size="20" :fill="['#2a2a2a', '#ffebef', '#2a2a2a', '#ffffff']"
+                        strokeLinejoin="bevel" class="icon-same-style" for="upload" @click="useInputToGetImg" />
+                    <input type="file" class="file-get" ref="imgInput" @change="inputImg">
+                </div>
                 <Switch theme="multi-color" size="20" :fill="['#2a2a2a', '#ffebef', '#2a2a2a', '#ffffff']"
                     strokeLinejoin="bevel" class="icon-same-style" @click="changeEnterMean" />
             </div>
             <div class="input-frame">
-                <div class="input" contenteditable="true" ref="textInput" @focus="inInput" @blur="outInput"></div>
+                <div class="input" contenteditable="true" ref="textInput" @focus="inInput" @blur="outInput">
+
+                </div>
             </div>
             <div class="chat-go">
                 <div class="button-go" @click="shootWords">shoot</div>
@@ -60,7 +89,7 @@
 </template>
 
 <script setup>
-import { computed, ref } from "vue";
+import { computed, onMounted, ref, watch } from "vue";
 import {
     Power,
     More,
@@ -74,11 +103,36 @@ const props = defineProps({
     name: String,
 });
 const textInput = ref(null); // textInput dom
+const imgInput = ref(null); // imgInput dom
 const chatData = ref([
-    { id: 1, name: "牢大", content: "孩子们，我回来了", goTime: "2023:12:25 19:23", avatar: "https://ts1.cn.mm.bing.net/th/id/R-C.cc73380011599a3ea359c5dbba559d28?rik=tb%2fyu09bRHjEhg&riu=http%3a%2f%2fsource.shop.busionline.com%2f2023-06-10_6484303597478.jpg&ehk=hDPMedrhYgLNPe9M%2bDMnJCyfCzPTdHPZJjGm8xdBcrc%3d&risl=&pid=ImgRaw&r=0" }
+    { id: 1, name: "牢大", content: "孩子们，不要怕", goTime: "2023:12:25 19:23", avatar: "https://ts1.cn.mm.bing.net/th/id/R-C.cc73380011599a3ea359c5dbba559d28?rik=tb%2fyu09bRHjEhg&riu=http%3a%2f%2fsource.shop.busionline.com%2f2023-06-10_6484303597478.jpg&ehk=hDPMedrhYgLNPe9M%2bDMnJCyfCzPTdHPZJjGm8xdBcrc%3d&risl=&pid=ImgRaw&r=0" },
+    { id: 1, name: "牢大", content: "孩子们，我回来了", goTime: "2023:12:25 19:23", avatar: "https://ts1.cn.mm.bing.net/th/id/R-C.cc73380011599a3ea359c5dbba559d28?rik=tb%2fyu09bRHjEhg&riu=http%3a%2f%2fsource.shop.busionline.com%2f2023-06-10_6484303597478.jpg&ehk=hDPMedrhYgLNPe9M%2bDMnJCyfCzPTdHPZJjGm8xdBcrc%3d&risl=&pid=ImgRaw&r=0" },
+    { id: 1, name: "牢大", content: "孩子们，我回来了", goTime: "2023:12:25 19:23", avatar: "https://ts1.cn.mm.bing.net/th/id/R-C.cc73380011599a3ea359c5dbba559d28?rik=tb%2fyu09bRHjEhg&riu=http%3a%2f%2fsource.shop.busionline.com%2f2023-06-10_6484303597478.jpg&ehk=hDPMedrhYgLNPe9M%2bDMnJCyfCzPTdHPZJjGm8xdBcrc%3d&risl=&pid=ImgRaw&r=0" },
+    { id: 1, name: "牢大", content: "孩子们，我回来了", goTime: "2023:12:25 19:23", avatar: "https://ts1.cn.mm.bing.net/th/id/R-C.cc73380011599a3ea359c5dbba559d28?rik=tb%2fyu09bRHjEhg&riu=http%3a%2f%2fsource.shop.busionline.com%2f2023-06-10_6484303597478.jpg&ehk=hDPMedrhYgLNPe9M%2bDMnJCyfCzPTdHPZJjGm8xdBcrc%3d&risl=&pid=ImgRaw&r=0" },
+    { id: 1, name: "牢大", content: "孩子们，我回来了", goTime: "2023:12:25 19:23", avatar: "https://ts1.cn.mm.bing.net/th/id/R-C.cc73380011599a3ea359c5dbba559d28?rik=tb%2fyu09bRHjEhg&riu=http%3a%2f%2fsource.shop.busionline.com%2f2023-06-10_6484303597478.jpg&ehk=hDPMedrhYgLNPe9M%2bDMnJCyfCzPTdHPZJjGm8xdBcrc%3d&risl=&pid=ImgRaw&r=0" },
+    { id: 1, name: "牢大", content: "孩子们，这不是我", goTime: "2023:12:25 19:23", avatar: "https://ts1.cn.mm.bing.net/th/id/R-C.cc73380011599a3ea359c5dbba559d28?rik=tb%2fyu09bRHjEhg&riu=http%3a%2f%2fsource.shop.busionline.com%2f2023-06-10_6484303597478.jpg&ehk=hDPMedrhYgLNPe9M%2bDMnJCyfCzPTdHPZJjGm8xdBcrc%3d&risl=&pid=ImgRaw&r=0" }
 ]); // 聊天数据
+const emoji = ref([
+    "😃", "😄", "😁", "😅", "🤣", "😂", "🙂", "🙃", "😇", "🥰", "😍", "😘", "😗", "😋", "🤪", "🤑", "🤭", "🤔", "😒", "😏", "🤥", "😴", "😪", "🤤", "🥵", "🤢", "😵", "😲", "😳", "😮", "😰", "😓", "😭", "😱", "🥱", "😤", "❤", "💔", "💢", "👉", "👈", "🖕", "🤞", "👌", "🤏", "✌", "👊", "🤜", "🤛", "👍", "👎", "💪", "👀", "👂", "👅", "👄", "🙇‍♂️", "🙇‍♀️", "🙅‍♂️", "🙅‍♀️", "🙋‍♂️", "🙋‍♀️", "🤷‍♂️", "🤷‍♀️", "🌹", "🥀", "🌷", "🌸", "🍺", "🍻", "🥂", "🎂", "🍭", "🎂", "🧧", "🎁", "🧨", "🎆", "🚘", "🚔", "🚖", "🚑", "🚌", "🚇", "🚉", "🚆", "🏎", "🏍", "🚲", "🛹", "🦽", "🏳", "🏁", "🏴‍☠️", "🇨🇳", "🐒", "🐷", "🐹", "🐇", "🦔", "🦦", "🦥", "🐣", "🦅", "🦆", "🐢", "🐉", "🐬", "🐡", "🦈", "🐌", "🦋"
+]); // emoji数据
 const isShowChat = computed(() => { return props.isShowChat }); // 是否显示聊天界面
+const isShowEmojiList = ref(false); // 是否打开emoji列表
 const isEnterGo = ref(true); // 是否enter键为发送信息
+const isLoseFocus = ref(true); // 是否丢失焦点
+
+onMounted(() => {
+    window.onload = function () {
+        let chatDiv = document.querySelector(".chat-home");
+        chatDiv.scrollTop = chatDiv.scrollHeight;
+    }
+})
+
+watch(chatData, () => {
+    setTimeout(() => {
+        let chatDiv = document.querySelector(".chat-home");
+        chatDiv.scrollTop = chatDiv.scrollHeight;
+    }, 500)
+})
 
 // 输入内容检测
 function isAllowGo() {
@@ -92,14 +146,24 @@ function isAllowGo() {
 function shootWords() {
     // console.log(textInput.value.innerHTML);
     if (isAllowGo()) {
-        const data = { id: 0, name: "我", content: textInput.value.innerHTML, goTime: "2023:12:25 19:23", avatar: "https://gss0.baidu.com/9vo3dSag_xI4khGko9WTAnF6hhy/zhidao/pic/item/e4dde71190ef76c6de93dc2f9d16fdfaaf516774.jpg" };
+        const img = document.querySelector(".input").querySelector("img");
+        let data = { id: 0, name: "我", goTime: "2023:12:25 19:23", avatar: "https://gss0.baidu.com/9vo3dSag_xI4khGko9WTAnF6hhy/zhidao/pic/item/e4dde71190ef76c6de93dc2f9d16fdfaaf516774.jpg" };
+        if (img) {
+            if (textInput.value.textContent === "") {
+                data.img = img.src;
+            } else {
+                data.content = textInput.value.textContent;
+                data.img = img.src;
+            }
+        } else {
+            data.content = textInput.value.textContent;
+        }
         chatData.value = [...chatData.value, data];
         textInput.value.innerHTML = null;
     }
 }
 // enter键触发方法
 function focusKeydown(event) {
-    console.log("到了");
     if (event.keyCode === 13) {
         // 不允许换行
         event.cancelBubble = true;
@@ -111,22 +175,84 @@ function focusKeydown(event) {
 }
 // 正在发送
 function inInput() {
+    isLoseFocus.value = false;
     if (isEnterGo.value) {
         textInput.value.addEventListener("keydown", focusKeydown)
     }
 }
 // 暂时移出发送
 function outInput() {
+    // console.log("失焦");
+    isLoseFocus.value = true;
     if (isEnterGo.value) {
         textInput.value.removeEventListener("keydown", focusKeydown);
     }
 }
 
-//切换enter判断
+// 切换enter判断
 function changeEnterMean() {
     isEnterGo.value = !isEnterGo.value;
 }
 
+// 打开/关闭表情列表
+function openOrCloseEmojiList() {
+    isShowEmojiList.value = !isShowEmojiList.value;
+}
+// 保持焦点
+function delFocusMissing(event) {
+    event.preventDefault(); // 取消mousedown默认动作
+}
+// 添加emoji到输入框中
+function addEmojiToInput(emoji) {
+    if (isLoseFocus.value) {
+        // 判断是否失焦
+        textInput.value.focus();
+        let selection = getSelection();
+        selection.selectAllChildren(textInput.value); // range 选择内容下所有子内容
+        selection.collapseToEnd(); // 光标移至最后
+    }
+    let range = getSelection().getRangeAt(0); // 获取目前光标
+    let span = document.createElement('span');
+    span.innerHTML = emoji;
+    range.insertNode(span);
+    range.setStartAfter(span); // 将光标移动到节点之后
+    range.collapse(true); // 合并光标位置
+}
+// 添加img到输入框中
+function addImgToInput(img) {
+    textInput.value.focus();
+    let selection = getSelection();
+    selection.selectAllChildren(textInput.value); // range 选择内容下所有子内容
+    selection.collapseToEnd(); // 光标移至最后
+    let range = selection.getRangeAt(0); // 获取目前光标
+    range.insertNode(img);
+    range.setStartAfter(img); // 将光标移动到节点之后
+    range.collapse(true); // 合并光标位置
+}
+
+// 触发input获取图片file
+function useInputToGetImg() {
+    imgInput.value.click();
+}
+// 上传图片
+function inputImg() {
+    console.log("我到了");
+    const img = document.createElement("img");
+    img.style.maxWidth = "60px";
+    img.style.maxHeight = "60px";
+    let fileData = imgInput.value.files[0];
+    let reader = new FileReader();
+    reader.readAsDataURL(fileData);//异步读取文件内容，结果用data:url的字符串形式表示
+    /*当读取操作成功完成时调用*/
+    reader.onload = function (e) {
+        console.log(e); //查看对象属性里面有个result属性，属性值，是一大串的base64格式的东西，这个就是我们要的图片
+        console.log(this.result);//取得数据 这里的this指向FileReader（）对象的实例reader
+        // console.log(imgInInput.value);
+        img.src = this.result;//赋值给img标签让它显示出来 
+        addImgToInput(img);
+        imgInput.value.value = "";
+    }
+}
 </script>
 
 <style lang="scss" scoped>
@@ -172,20 +298,39 @@ function changeEnterMean() {
             width: 100%;
 
             li {
-                margin-bottom: 10px;
                 display: flex;
                 width: 100%;
 
-                img {
+                .avatar {
                     margin-top: 4px;
                     width: 46x;
                     height: 46px;
                 }
             }
 
+            .enter-img-in-chat {
+                max-width: 100px;
+                max-height: 100px;
+            }
+
             .my-words {
                 display: flex;
-                justify-content: end;
+                flex-direction: column;
+                width: 100%;
+
+                .just-img {
+                    margin-bottom: 10px;
+                    display: flex;
+                    justify-content: end;
+                    width: 100%;
+                }
+
+                .just-words {
+                    margin-bottom: 10px;
+                    display: flex;
+                    justify-content: end;
+                    width: 100%;
+                }
 
                 .left-content {
                     margin-right: 6px;
@@ -197,6 +342,13 @@ function changeEnterMean() {
                         color: rgb(92, 92, 92);
                     }
 
+                    .img {
+                        margin-top: 4px;
+                        display: flex;
+                        justify-content: end;
+                        width: 100%;
+                    }
+
                     .words {
                         margin-top: 4px;
                         display: flex;
@@ -204,7 +356,7 @@ function changeEnterMean() {
                         .xiao-jiao {
                             width: 6px;
                             background: white;
-                            -webkit-clip-path: polygon(0 70%, 0% 30%, 100% 50%);
+                            clip-path: polygon(-4% 70%, -4% 30%, 100% 50%);
                         }
 
                         .content {
@@ -219,6 +371,18 @@ function changeEnterMean() {
             }
 
             .others-words {
+                .just-img {
+                    margin-bottom: 10px;
+                    display: flex;
+                    width: 100%;
+                }
+
+                .just-words {
+                    margin-bottom: 10px;
+                    display: flex;
+                    width: 100%;
+                }
+
                 .right-content {
                     margin-left: 6px;
 
@@ -234,7 +398,7 @@ function changeEnterMean() {
                         .xiao-jiao {
                             width: 6px;
                             background: white;
-                            -webkit-clip-path: polygon(0 50%, 100% 30%, 100% 70%);
+                            clip-path: polygon(0% 50%, 104% 30%, 104% 70%);
                         }
 
                         .content {
@@ -269,6 +433,12 @@ function changeEnterMean() {
 
             .emoji {
                 position: relative;
+            }
+
+            .get-img {
+                .file-get {
+                    display: none;
+                }
             }
         }
 
