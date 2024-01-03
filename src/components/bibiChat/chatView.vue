@@ -90,7 +90,7 @@
 </template>
 
 <script setup>
-import { computed, nextTick, onMounted, ref, watch } from "vue";
+import { computed, nextTick, onMounted, onUnmounted, ref, watch } from "vue";
 import {
     Power,
     More,
@@ -106,17 +106,17 @@ const props = defineProps({
 const textInput = ref(null); // textInput dom
 const imgInput = ref(null); // imgInput dom
 const chatData = ref([
-    { id: 1, name: "牢大", content: "孩子们，不要怕", goTime: "2023:12:25 19:23", avatar: "https://ts1.cn.mm.bing.net/th/id/R-C.cc73380011599a3ea359c5dbba559d28?rik=tb%2fyu09bRHjEhg&riu=http%3a%2f%2fsource.shop.busionline.com%2f2023-06-10_6484303597478.jpg&ehk=hDPMedrhYgLNPe9M%2bDMnJCyfCzPTdHPZJjGm8xdBcrc%3d&risl=&pid=ImgRaw&r=0" },
-    { id: 1, name: "牢大", content: "孩子们，我回来了", goTime: "2023:12:25 19:23", avatar: "https://ts1.cn.mm.bing.net/th/id/R-C.cc73380011599a3ea359c5dbba559d28?rik=tb%2fyu09bRHjEhg&riu=http%3a%2f%2fsource.shop.busionline.com%2f2023-06-10_6484303597478.jpg&ehk=hDPMedrhYgLNPe9M%2bDMnJCyfCzPTdHPZJjGm8xdBcrc%3d&risl=&pid=ImgRaw&r=0" },
-    { id: 1, name: "牢大", content: "孩子们，我回来了", goTime: "2023:12:25 19:23", avatar: "https://ts1.cn.mm.bing.net/th/id/R-C.cc73380011599a3ea359c5dbba559d28?rik=tb%2fyu09bRHjEhg&riu=http%3a%2f%2fsource.shop.busionline.com%2f2023-06-10_6484303597478.jpg&ehk=hDPMedrhYgLNPe9M%2bDMnJCyfCzPTdHPZJjGm8xdBcrc%3d&risl=&pid=ImgRaw&r=0" },
-    { id: 1, name: "牢大", content: "孩子们，我回来了,孩子们，我回来了,孩子们，我回来了,孩子们，我回来了", goTime: "2024:1:1 19:23", avatar: "https://ts1.cn.mm.bing.net/th/id/R-C.cc73380011599a3ea359c5dbba559d28?rik=tb%2fyu09bRHjEhg&riu=http%3a%2f%2fsource.shop.busionline.com%2f2023-06-10_6484303597478.jpg&ehk=hDPMedrhYgLNPe9M%2bDMnJCyfCzPTdHPZJjGm8xdBcrc%3d&risl=&pid=ImgRaw&r=0" },
-    { id: 1, name: "牢大", content: "孩子们，我回来了", goTime: "2024:1:2 18:23", avatar: "https://ts1.cn.mm.bing.net/th/id/R-C.cc73380011599a3ea359c5dbba559d28?rik=tb%2fyu09bRHjEhg&riu=http%3a%2f%2fsource.shop.busionline.com%2f2023-06-10_6484303597478.jpg&ehk=hDPMedrhYgLNPe9M%2bDMnJCyfCzPTdHPZJjGm8xdBcrc%3d&risl=&pid=ImgRaw&r=0" },
-    { id: 1, name: "牢大", content: "孩子们，这不是我", goTime: "2024:1:2 19:11", avatar: "https://ts1.cn.mm.bing.net/th/id/R-C.cc73380011599a3ea359c5dbba559d28?rik=tb%2fyu09bRHjEhg&riu=http%3a%2f%2fsource.shop.busionline.com%2f2023-06-10_6484303597478.jpg&ehk=hDPMedrhYgLNPe9M%2bDMnJCyfCzPTdHPZJjGm8xdBcrc%3d&risl=&pid=ImgRaw&r=0" }
+    { id: 1, name: "牢大", content: "孩子们，不要怕", goTime: "2023:12:25 19:23:15", avatar: "https://ts1.cn.mm.bing.net/th/id/R-C.cc73380011599a3ea359c5dbba559d28?rik=tb%2fyu09bRHjEhg&riu=http%3a%2f%2fsource.shop.busionline.com%2f2023-06-10_6484303597478.jpg&ehk=hDPMedrhYgLNPe9M%2bDMnJCyfCzPTdHPZJjGm8xdBcrc%3d&risl=&pid=ImgRaw&r=0" },
+    { id: 1, name: "牢大", content: "孩子们，我回来了", goTime: "2023:12:25 19:23:15", avatar: "https://ts1.cn.mm.bing.net/th/id/R-C.cc73380011599a3ea359c5dbba559d28?rik=tb%2fyu09bRHjEhg&riu=http%3a%2f%2fsource.shop.busionline.com%2f2023-06-10_6484303597478.jpg&ehk=hDPMedrhYgLNPe9M%2bDMnJCyfCzPTdHPZJjGm8xdBcrc%3d&risl=&pid=ImgRaw&r=0" },
+    { id: 1, name: "牢大", content: "孩子们，我回来了", goTime: "2024:1:1 19:14:15", avatar: "https://ts1.cn.mm.bing.net/th/id/R-C.cc73380011599a3ea359c5dbba559d28?rik=tb%2fyu09bRHjEhg&riu=http%3a%2f%2fsource.shop.busionline.com%2f2023-06-10_6484303597478.jpg&ehk=hDPMedrhYgLNPe9M%2bDMnJCyfCzPTdHPZJjGm8xdBcrc%3d&risl=&pid=ImgRaw&r=0" },
+    { id: 1, name: "牢大", content: "孩子们，我回来了,孩子们，我回来了,孩子们，我回来了,孩子们，我回来了", goTime: "2024:1:1 19:24:15", avatar: "https://ts1.cn.mm.bing.net/th/id/R-C.cc73380011599a3ea359c5dbba559d28?rik=tb%2fyu09bRHjEhg&riu=http%3a%2f%2fsource.shop.busionline.com%2f2023-06-10_6484303597478.jpg&ehk=hDPMedrhYgLNPe9M%2bDMnJCyfCzPTdHPZJjGm8xdBcrc%3d&risl=&pid=ImgRaw&r=0" },
+    { id: 1, name: "牢大", content: "孩子们，我回来了", goTime: "2024:1:2 18:23:15", avatar: "https://ts1.cn.mm.bing.net/th/id/R-C.cc73380011599a3ea359c5dbba559d28?rik=tb%2fyu09bRHjEhg&riu=http%3a%2f%2fsource.shop.busionline.com%2f2023-06-10_6484303597478.jpg&ehk=hDPMedrhYgLNPe9M%2bDMnJCyfCzPTdHPZJjGm8xdBcrc%3d&risl=&pid=ImgRaw&r=0" },
+    { id: 1, name: "牢大", content: "孩子们，这不是我", goTime: "2024:1:2 19:11:15", avatar: "https://ts1.cn.mm.bing.net/th/id/R-C.cc73380011599a3ea359c5dbba559d28?rik=tb%2fyu09bRHjEhg&riu=http%3a%2f%2fsource.shop.busionline.com%2f2023-06-10_6484303597478.jpg&ehk=hDPMedrhYgLNPe9M%2bDMnJCyfCzPTdHPZJjGm8xdBcrc%3d&risl=&pid=ImgRaw&r=0" }
 ]); // 聊天数据
 const emoji = ref([
     "😃", "😄", "😁", "😅", "🤣", "😂", "🙂", "🙃", "😇", "🥰", "😍", "😘", "😗", "😋", "🤪", "🤑", "🤭", "🤔", "😒", "😏", "🤥", "😴", "😪", "🤤", "🥵", "🤢", "😵", "😲", "😳", "😮", "😰", "😓", "😭", "😱", "🥱", "😤", "❤", "💔", "💢", "👉", "👈", "🖕", "🤞", "👌", "🤏", "✌", "👊", "🤜", "🤛", "👍", "👎", "💪", "👀", "👂", "👅", "👄", "🙇‍♂️", "🙇‍♀️", "🙅‍♂️", "🙅‍♀️", "🙋‍♂️", "🙋‍♀️", "🤷‍♂️", "🤷‍♀️", "🌹", "🥀", "🌷", "🌸", "🍺", "🍻", "🥂", "🎂", "🍭", "🎂", "🧧", "🎁", "🧨", "🎆", "🚘", "🚔", "🚖", "🚑", "🚌", "🚇", "🚉", "🚆", "🏎", "🏍", "🚲", "🛹", "🦽", "🏳", "🏁", "🏴‍☠️", "🇨🇳", "🐒", "🐷", "🐹", "🐇", "🦔", "🦦", "🦥", "🐣", "🦅", "🦆", "🐢", "🐉", "🐬", "🐡", "🦈", "🐌", "🦋"
 ]); // emoji数据
-const time = ref(0); //定时器
+const timer = ref(0); //定时器
 const isShowChat = computed(() => { return props.isShowChat }); // 是否显示聊天界面
 const isShowEmojiList = ref(false); // 是否打开emoji列表
 const isEnterGo = ref(true); // 是否enter键为发送信息
@@ -138,22 +138,21 @@ onMounted(() => {
             // 拆解time，转为date
             let kakoTime = 0;
             if (i != 0) {
-                const [nianYueRi, fenMiao] = chatData.value[i - (repeatTimeTime.value + 1)].goTime.split(" ");
+                const [nianYueRi, shifenMiao] = chatData.value[i - (repeatTimeTime.value + 1)].goTime.split(" ");
                 const [nian, yue, ri] = nianYueRi.split(":");
-                const [fen, miao] = fenMiao.split(":");
-                const kakoDate = new Date(nian, yue - 1, ri, fen, miao);
+                const [shi, fen, miao] = shifenMiao.split(":");
+                const kakoDate = new Date(nian, yue - 1, ri, shi, fen, miao);
                 kakoTime = kakoDate.getTime(); // 上一个时间戳
             }
-            const [nianYueRi, fenMiao] = chatData.value[i].goTime.split(" ");
+            const [nianYueRi, shifenMiao] = chatData.value[i].goTime.split(" ");
             const [nian, yue, ri] = nianYueRi.split(":");
-            const [fen, miao] = fenMiao.split(":");
-            const lastDate = new Date(nian, yue - 1, ri, fen, miao);
+            const [shi, fen, miao] = shifenMiao.split(":");
+            const lastDate = new Date(nian, yue - 1, ri, shi, fen, miao);
             const lastTime = lastDate.getTime(); // 时间戳
             const lastNian = lastDate.getFullYear(); // 年
-            const lastYue = lastDate.getMonth(); // 年
-            const lastDay = lastDate.getDay() // 年
-            // 判断是否处于重复状态
-            if (kakoTime != 0 && lastTime - kakoTime <= 50000) {
+            const lastYue = lastDate.getMonth(); // 月
+            // 判断是否处于重复状态 10min
+            if (kakoTime != 0 && lastTime - kakoTime <= 1000000) {
                 isNowRepeatTime.value = true;
                 repeatTimeTime.value += 1;
                 continue;
@@ -161,58 +160,62 @@ onMounted(() => {
                 repeatTimeTime.value = 0;
                 isNowRepeatTime.value = false;
             }
-            // 判断是否为刚刚发送
-            if (nowTime - lastTime <= 50000) {
+            // 判断是否为刚刚发送 1min
+            if (nowTime - lastTime <= 100000) {
                 chatData.value[i].overTime = "刚刚";
                 continue;
             }
             // 判断是否不同年
             if (nowNian != lastNian) {
-                chatData.value[i].overTime = nian + "年" + yue + "月" + ri + "日" + " " + fen + ":" + miao;
+                chatData.value[i].overTime = nian + "年" + yue + "月" + ri + "日" + " " + shi + ":" + fen;
                 continue;
             }
             // 判断是否不同月
             if (nowYue != lastYue) {
-                chatData.value[i].overTime = yue + "月" + ri + "日" + " " + fen + ":" + miao;
+                chatData.value[i].overTime = yue + "月" + ri + "日" + " " + shi + ":" + fen;
                 continue;
             }
             // 判断是否同日期或为昨天
             if (Number(ri) === nowRi) {
-                chatData.value[i].overTime = fen + ":" + miao;
+                chatData.value[i].overTime = shi + ":" + fen;
                 // console.log(chatData.value[i]);
                 continue;
             } else if (Number(ri) === nowRi - 1) {
-                chatData.value[i].overTime = "昨天 " + fen + ":" + miao;
+                chatData.value[i].overTime = "昨天 " + shi + ":" + fen;
                 continue;
             }
             // 判断是否处于同周
             if (nowRi - Number(ri) <= 6 && nowDay != 0 && nowDay != 1) {
                 switch (ri) {
                     case "0":
-                        chatData.value[i].overTime = "星期天 " + fen + ":" + miao;
+                        chatData.value[i].overTime = "星期天 " + shi + ":" + fen;
                         break;
                     case "1":
-                        chatData.value[i].overTime = "星期一 " + fen + ":" + miao;
+                        chatData.value[i].overTime = "星期一 " + shi + ":" + fen;
                         break;
                     case "2":
-                        chatData.value[i].overTime = "星期二 " + fen + ":" + miao;
+                        chatData.value[i].overTime = "星期二 " + shi + ":" + fen;
                         break;
                     case "3":
-                        chatData.value[i].overTime = "星期三 " + fen + ":" + miao;
+                        chatData.value[i].overTime = "星期三 " + shi + ":" + fen;
                         break;
                     case "4":
-                        chatData.value[i].overTime = "星期四 " + fen + ":" + miao;
+                        chatData.value[i].overTime = "星期四 " + shi + ":" + fen;
                         break;
                 }
                 continue;
             } else {
-                chatData.value[i].overTime = ri + "日 " + fen + ":" + miao;
+                chatData.value[i].overTime = ri + "日 " + shi + ":" + fen;
                 continue;
             }
         }
     }
-    chooseTimeShow();
-    time.value = setInterval(chooseTimeShow, 5000)
+    chooseTimeShow(); // 加载完成立刻执行一次
+    timer.value = setInterval(chooseTimeShow, 5000); // 定时更新模糊时间
+})
+
+onUnmounted(() => {
+    clearInterval(timer.value); // 销毁定时更新模糊时间
 })
 
 watch(isShowChat, function goToEnd(value) {
@@ -248,7 +251,7 @@ function shootWords() {
         if (month > 12) {
             month = 1;
         }
-        let nowTime = time.getFullYear() + ":" + month + ":" + time.getDate() + " " + time.getHours() + ":" + time.getMinutes();
+        let nowTime = time.getFullYear() + ":" + month + ":" + time.getDate() + " " + time.getHours() + ":" + time.getMinutes() + ":" + time.getSeconds();
         // console.log(nowTime);
         const img = document.querySelector(".input").querySelector("img");
         let data = { id: 0, name: "我", goTime: nowTime, avatar: "https://gss0.baidu.com/9vo3dSag_xI4khGko9WTAnF6hhy/zhidao/pic/item/e4dde71190ef76c6de93dc2f9d16fdfaaf516774.jpg" };

@@ -20,7 +20,8 @@
                     </div>
                 </div>
                 <ul class="chat-list">
-                    <li v-for="(list, index) in chatListData" :key="list.id" v-show="!isSearching" @click="goToChat(index)">
+                    <li v-for="(list, index) in chatListData" :key="list.id" v-show="!isSearching" @click="goToChat(index)"
+                        ref="liNoSearch">
                         <img :src="list.avatar" alt="头像">
                         <div class="content">
                             <div class="top-content">
@@ -30,8 +31,8 @@
                             <div class="bottom-content">{{ list.lastChatData }}</div>
                         </div>
                     </li>
-                    <li v-for="(list, index) in searchChatListData" :key="list.id" v-show="isSearching"
-                        @click="goToChat(index)">
+                    <li v-for="(list) in searchChatListData" :key="list.id" v-show="isSearching"
+                        @click="goToChatAndCloseSearch(list.id)">
                         <img :src="list.avatar" alt="头像">
                         <div class="content">
                             <div class="top-content">
@@ -57,7 +58,7 @@
 <script setup>
 import resize from "@/components/resize/resize.vue"
 import chatView from "./chatView.vue";
-import { ref } from "vue"
+import { nextTick, ref } from "vue"
 import {
     Communication,
     Search,
@@ -66,6 +67,7 @@ import {
 
 const charList = ref(null); // charList dom
 const searchInput = ref(null); // searchInput dom
+const liNoSearch = ref(null); // liNoSearch dom
 const leftWidth = ref("200px"); // 聊天列表宽度
 const whatList = ref("chatList"); // 列表切换
 const chatListData = ref([ // 聊天列表数据
@@ -82,6 +84,7 @@ const searchChatListData = ref([]); // 搜索聊天列表数据
 const isSearching = ref(false); // 是否正在搜索
 const isShowChat = ref(false); // 是否显示聊天界面
 const chatBro = ref(""); // 聊天对象名
+const lastIndex = ref(-1); // 记录上一次点击的下标
 
 // 聊天列表模糊时间
 function changeToFuzzyTime() {
@@ -127,14 +130,42 @@ function searchInChatList() {
         searchChatListData.value = [];
     }
 }
+
+function changeBackgroundColor(index) {
+    // 清除上次点击触发的背景色
+    if (lastIndex.value != -1) {
+        liNoSearch.value[lastIndex.value].style.backgroundColor = null;
+    }
+    lastIndex.value = index; // 记录本次下标
+    liNoSearch.value[index].style.backgroundColor = "rgba(255, 255, 255, 0.4)"; // 上色
+}
+
 // 开启聊天界面
 function goToChat(index) {
-    isShowChat.value = true;
-    if (isSearching.value === true) {
-        chatBro.value = searchChatListData.value[index].name;
-    } else {
+    changeBackgroundColor(index);
+    isShowChat.value = false;
+    nextTick(() => {
+        isShowChat.value = true;
         chatBro.value = chatListData.value[index].name;
+    })
+}
+
+// 开启聊天界面(搜索中版)
+function goToChatAndCloseSearch(index) {
+    let trueIndex = -1;
+    for (let i = 0; i < chatListData.value.length; i++) {
+        if (chatListData.value[i].id === index) {
+            trueIndex = i;
+            break;
+        }
     }
+    isSearching.value = false; // 关闭搜索
+    changeBackgroundColor(trueIndex)
+    isShowChat.value = false;
+    nextTick(() => {
+        isShowChat.value = true;
+        chatBro.value = chatListData.value[trueIndex].name;
+    })
 }
 </script>
 
@@ -148,6 +179,13 @@ function goToChat(index) {
     width: 800px;
     height: 450px;
     background: linear-gradient(rgba(255, 103, 146, 0.5), rgba(255, 255, 255, 0.8));
+    box-shadow:
+        0px 0px 2.2px rgba(0, 0, 0, 0.081),
+        0px 0px 5.3px rgba(0, 0, 0, 0.051),
+        0px 0px 10px rgba(0, 0, 0, 0.027),
+        0px 0px 17.9px rgba(0, 0, 0, 0.04),
+        0px 0px 33.4px rgba(0, 0, 0, 0.127),
+        0px 0px 80px rgba(0, 0, 0, 0.4);
     border-radius: 20px 20px 20px 20px;
     backdrop-filter: blur(2px);
     overflow: hidden;
