@@ -15,6 +15,7 @@
         </div>
         <div class="chat-home">
             <ul v-for="list in chatData" :key="list.id">
+                <div class="go-time" v-if="list.overTime != undefined">{{ list.overTime }}</div>
                 <li class="my-words" v-if="list.id === 0">
                     <div class="just-img" v-if="list.img != undefined">
                         <div class="left-content">
@@ -89,7 +90,7 @@
 </template>
 
 <script setup>
-import { computed, onMounted, ref, watch } from "vue";
+import { computed, nextTick, onMounted, ref, watch } from "vue";
 import {
     Power,
     More,
@@ -108,22 +109,118 @@ const chatData = ref([
     { id: 1, name: "牢大", content: "孩子们，不要怕", goTime: "2023:12:25 19:23", avatar: "https://ts1.cn.mm.bing.net/th/id/R-C.cc73380011599a3ea359c5dbba559d28?rik=tb%2fyu09bRHjEhg&riu=http%3a%2f%2fsource.shop.busionline.com%2f2023-06-10_6484303597478.jpg&ehk=hDPMedrhYgLNPe9M%2bDMnJCyfCzPTdHPZJjGm8xdBcrc%3d&risl=&pid=ImgRaw&r=0" },
     { id: 1, name: "牢大", content: "孩子们，我回来了", goTime: "2023:12:25 19:23", avatar: "https://ts1.cn.mm.bing.net/th/id/R-C.cc73380011599a3ea359c5dbba559d28?rik=tb%2fyu09bRHjEhg&riu=http%3a%2f%2fsource.shop.busionline.com%2f2023-06-10_6484303597478.jpg&ehk=hDPMedrhYgLNPe9M%2bDMnJCyfCzPTdHPZJjGm8xdBcrc%3d&risl=&pid=ImgRaw&r=0" },
     { id: 1, name: "牢大", content: "孩子们，我回来了", goTime: "2023:12:25 19:23", avatar: "https://ts1.cn.mm.bing.net/th/id/R-C.cc73380011599a3ea359c5dbba559d28?rik=tb%2fyu09bRHjEhg&riu=http%3a%2f%2fsource.shop.busionline.com%2f2023-06-10_6484303597478.jpg&ehk=hDPMedrhYgLNPe9M%2bDMnJCyfCzPTdHPZJjGm8xdBcrc%3d&risl=&pid=ImgRaw&r=0" },
-    { id: 1, name: "牢大", content: "孩子们，我回来了", goTime: "2023:12:25 19:23", avatar: "https://ts1.cn.mm.bing.net/th/id/R-C.cc73380011599a3ea359c5dbba559d28?rik=tb%2fyu09bRHjEhg&riu=http%3a%2f%2fsource.shop.busionline.com%2f2023-06-10_6484303597478.jpg&ehk=hDPMedrhYgLNPe9M%2bDMnJCyfCzPTdHPZJjGm8xdBcrc%3d&risl=&pid=ImgRaw&r=0" },
-    { id: 1, name: "牢大", content: "孩子们，我回来了", goTime: "2023:12:25 19:23", avatar: "https://ts1.cn.mm.bing.net/th/id/R-C.cc73380011599a3ea359c5dbba559d28?rik=tb%2fyu09bRHjEhg&riu=http%3a%2f%2fsource.shop.busionline.com%2f2023-06-10_6484303597478.jpg&ehk=hDPMedrhYgLNPe9M%2bDMnJCyfCzPTdHPZJjGm8xdBcrc%3d&risl=&pid=ImgRaw&r=0" },
-    { id: 1, name: "牢大", content: "孩子们，这不是我", goTime: "2023:12:25 19:23", avatar: "https://ts1.cn.mm.bing.net/th/id/R-C.cc73380011599a3ea359c5dbba559d28?rik=tb%2fyu09bRHjEhg&riu=http%3a%2f%2fsource.shop.busionline.com%2f2023-06-10_6484303597478.jpg&ehk=hDPMedrhYgLNPe9M%2bDMnJCyfCzPTdHPZJjGm8xdBcrc%3d&risl=&pid=ImgRaw&r=0" }
+    { id: 1, name: "牢大", content: "孩子们，我回来了,孩子们，我回来了,孩子们，我回来了,孩子们，我回来了", goTime: "2024:1:1 19:23", avatar: "https://ts1.cn.mm.bing.net/th/id/R-C.cc73380011599a3ea359c5dbba559d28?rik=tb%2fyu09bRHjEhg&riu=http%3a%2f%2fsource.shop.busionline.com%2f2023-06-10_6484303597478.jpg&ehk=hDPMedrhYgLNPe9M%2bDMnJCyfCzPTdHPZJjGm8xdBcrc%3d&risl=&pid=ImgRaw&r=0" },
+    { id: 1, name: "牢大", content: "孩子们，我回来了", goTime: "2024:1:2 18:23", avatar: "https://ts1.cn.mm.bing.net/th/id/R-C.cc73380011599a3ea359c5dbba559d28?rik=tb%2fyu09bRHjEhg&riu=http%3a%2f%2fsource.shop.busionline.com%2f2023-06-10_6484303597478.jpg&ehk=hDPMedrhYgLNPe9M%2bDMnJCyfCzPTdHPZJjGm8xdBcrc%3d&risl=&pid=ImgRaw&r=0" },
+    { id: 1, name: "牢大", content: "孩子们，这不是我", goTime: "2024:1:2 19:11", avatar: "https://ts1.cn.mm.bing.net/th/id/R-C.cc73380011599a3ea359c5dbba559d28?rik=tb%2fyu09bRHjEhg&riu=http%3a%2f%2fsource.shop.busionline.com%2f2023-06-10_6484303597478.jpg&ehk=hDPMedrhYgLNPe9M%2bDMnJCyfCzPTdHPZJjGm8xdBcrc%3d&risl=&pid=ImgRaw&r=0" }
 ]); // 聊天数据
 const emoji = ref([
     "😃", "😄", "😁", "😅", "🤣", "😂", "🙂", "🙃", "😇", "🥰", "😍", "😘", "😗", "😋", "🤪", "🤑", "🤭", "🤔", "😒", "😏", "🤥", "😴", "😪", "🤤", "🥵", "🤢", "😵", "😲", "😳", "😮", "😰", "😓", "😭", "😱", "🥱", "😤", "❤", "💔", "💢", "👉", "👈", "🖕", "🤞", "👌", "🤏", "✌", "👊", "🤜", "🤛", "👍", "👎", "💪", "👀", "👂", "👅", "👄", "🙇‍♂️", "🙇‍♀️", "🙅‍♂️", "🙅‍♀️", "🙋‍♂️", "🙋‍♀️", "🤷‍♂️", "🤷‍♀️", "🌹", "🥀", "🌷", "🌸", "🍺", "🍻", "🥂", "🎂", "🍭", "🎂", "🧧", "🎁", "🧨", "🎆", "🚘", "🚔", "🚖", "🚑", "🚌", "🚇", "🚉", "🚆", "🏎", "🏍", "🚲", "🛹", "🦽", "🏳", "🏁", "🏴‍☠️", "🇨🇳", "🐒", "🐷", "🐹", "🐇", "🦔", "🦦", "🦥", "🐣", "🦅", "🦆", "🐢", "🐉", "🐬", "🐡", "🦈", "🐌", "🦋"
 ]); // emoji数据
+const time = ref(0); //定时器
 const isShowChat = computed(() => { return props.isShowChat }); // 是否显示聊天界面
 const isShowEmojiList = ref(false); // 是否打开emoji列表
 const isEnterGo = ref(true); // 是否enter键为发送信息
 const isLoseFocus = ref(true); // 是否丢失焦点
+const isNowRepeatTime = ref(false); // 是否处于重复时间状态
+const repeatTimeTime = ref(0); // 重复次数
 
 onMounted(() => {
-    window.onload = function () {
-        let chatDiv = document.querySelector(".chat-home");
-        chatDiv.scrollTop = chatDiv.scrollHeight;
+    // 模糊时间
+    function chooseTimeShow() {
+        const nowDate = new Date();
+        const nowTime = nowDate.getTime(); // 分
+        const nowNian = nowDate.getFullYear(); // 年
+        const nowYue = nowDate.getMonth(); // 月
+        const nowRi = nowDate.getDate(); // 日
+        const nowDay = nowDate.getDay(); // 星期
+        for (let i = 0; i < chatData.value.length; i++) {
+            // console.log(chatData.value[i]);
+            // 拆解time，转为date
+            let kakoTime = 0;
+            if (i != 0) {
+                const [nianYueRi, fenMiao] = chatData.value[i - (repeatTimeTime.value + 1)].goTime.split(" ");
+                const [nian, yue, ri] = nianYueRi.split(":");
+                const [fen, miao] = fenMiao.split(":");
+                const kakoDate = new Date(nian, yue - 1, ri, fen, miao);
+                kakoTime = kakoDate.getTime(); // 上一个时间戳
+            }
+            const [nianYueRi, fenMiao] = chatData.value[i].goTime.split(" ");
+            const [nian, yue, ri] = nianYueRi.split(":");
+            const [fen, miao] = fenMiao.split(":");
+            const lastDate = new Date(nian, yue - 1, ri, fen, miao);
+            const lastTime = lastDate.getTime(); // 时间戳
+            const lastNian = lastDate.getFullYear(); // 年
+            const lastYue = lastDate.getMonth(); // 年
+            const lastDay = lastDate.getDay() // 年
+            // 判断是否处于重复状态
+            if (kakoTime != 0 && lastTime - kakoTime <= 50000) {
+                isNowRepeatTime.value = true;
+                repeatTimeTime.value += 1;
+                continue;
+            } else {
+                repeatTimeTime.value = 0;
+                isNowRepeatTime.value = false;
+            }
+            // 判断是否为刚刚发送
+            if (nowTime - lastTime <= 50000) {
+                chatData.value[i].overTime = "刚刚";
+                continue;
+            }
+            // 判断是否不同年
+            if (nowNian != lastNian) {
+                chatData.value[i].overTime = nian + "年" + yue + "月" + ri + "日" + " " + fen + ":" + miao;
+                continue;
+            }
+            // 判断是否不同月
+            if (nowYue != lastYue) {
+                chatData.value[i].overTime = yue + "月" + ri + "日" + " " + fen + ":" + miao;
+                continue;
+            }
+            // 判断是否同日期或为昨天
+            if (Number(ri) === nowRi) {
+                chatData.value[i].overTime = fen + ":" + miao;
+                // console.log(chatData.value[i]);
+                continue;
+            } else if (Number(ri) === nowRi - 1) {
+                chatData.value[i].overTime = "昨天 " + fen + ":" + miao;
+                continue;
+            }
+            // 判断是否处于同周
+            if (nowRi - Number(ri) <= 6 && nowDay != 0 && nowDay != 1) {
+                switch (ri) {
+                    case "0":
+                        chatData.value[i].overTime = "星期天 " + fen + ":" + miao;
+                        break;
+                    case "1":
+                        chatData.value[i].overTime = "星期一 " + fen + ":" + miao;
+                        break;
+                    case "2":
+                        chatData.value[i].overTime = "星期二 " + fen + ":" + miao;
+                        break;
+                    case "3":
+                        chatData.value[i].overTime = "星期三 " + fen + ":" + miao;
+                        break;
+                    case "4":
+                        chatData.value[i].overTime = "星期四 " + fen + ":" + miao;
+                        break;
+                }
+                continue;
+            } else {
+                chatData.value[i].overTime = ri + "日 " + fen + ":" + miao;
+                continue;
+            }
+        }
+    }
+    chooseTimeShow();
+    time.value = setInterval(chooseTimeShow, 5000)
+})
+
+watch(isShowChat, function goToEnd(value) {
+    if (value) {
+        nextTick(() => {
+            let chatDiv = document.querySelector(".chat-home");
+            chatDiv.scrollTop = chatDiv.scrollHeight;
+        })
     }
 })
 
@@ -146,8 +243,15 @@ function isAllowGo() {
 function shootWords() {
     // console.log(textInput.value.innerHTML);
     if (isAllowGo()) {
+        let time = new Date();
+        let month = time.getMonth() + 1;
+        if (month > 12) {
+            month = 1;
+        }
+        let nowTime = time.getFullYear() + ":" + month + ":" + time.getDate() + " " + time.getHours() + ":" + time.getMinutes();
+        // console.log(nowTime);
         const img = document.querySelector(".input").querySelector("img");
-        let data = { id: 0, name: "我", goTime: "2023:12:25 19:23", avatar: "https://gss0.baidu.com/9vo3dSag_xI4khGko9WTAnF6hhy/zhidao/pic/item/e4dde71190ef76c6de93dc2f9d16fdfaaf516774.jpg" };
+        let data = { id: 0, name: "我", goTime: nowTime, avatar: "https://gss0.baidu.com/9vo3dSag_xI4khGko9WTAnF6hhy/zhidao/pic/item/e4dde71190ef76c6de93dc2f9d16fdfaaf516774.jpg" };
         if (img) {
             if (textInput.value.textContent === "") {
                 data.img = img.src;
@@ -222,8 +326,6 @@ function addEmojiToInput(emoji) {
 function addImgToInput(img) {
     textInput.value.focus();
     let selection = getSelection();
-    selection.selectAllChildren(textInput.value); // range 选择内容下所有子内容
-    selection.collapseToEnd(); // 光标移至最后
     let range = selection.getRangeAt(0); // 获取目前光标
     range.insertNode(img);
     range.setStartAfter(img); // 将光标移动到节点之后
@@ -236,19 +338,15 @@ function useInputToGetImg() {
 }
 // 上传图片
 function inputImg() {
-    console.log("我到了");
     const img = document.createElement("img");
     img.style.maxWidth = "60px";
     img.style.maxHeight = "60px";
     let fileData = imgInput.value.files[0];
     let reader = new FileReader();
-    reader.readAsDataURL(fileData);//异步读取文件内容，结果用data:url的字符串形式表示
-    /*当读取操作成功完成时调用*/
+    reader.readAsDataURL(fileData); // 异步读取文件内容，结果用data:url的字符串形式表示
     reader.onload = function (e) {
-        console.log(e); //查看对象属性里面有个result属性，属性值，是一大串的base64格式的东西，这个就是我们要的图片
-        console.log(this.result);//取得数据 这里的this指向FileReader（）对象的实例reader
         // console.log(imgInInput.value);
-        img.src = this.result;//赋值给img标签让它显示出来 
+        img.src = this.result; // 赋值给img标签让它显示出来 
         addImgToInput(img);
         imgInput.value.value = "";
     }
@@ -293,6 +391,15 @@ function inputImg() {
         width: calc(100% - 6px);
         height: calc(100% - 180px);
 
+        .go-time {
+            width: 100%;
+            text-align: center;
+            color: rgb(255, 255, 255);
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+            font-size: 14px;
+            font-weight: 600;
+        }
+
         ul {
             padding-top: 6px;
             width: 100%;
@@ -334,6 +441,9 @@ function inputImg() {
 
                 .left-content {
                     margin-right: 6px;
+                    max-width: 50%;
+                    white-space: normal;
+                    word-break: break-all;
 
                     .name {
                         display: flex;
@@ -352,6 +462,7 @@ function inputImg() {
                     .words {
                         margin-top: 4px;
                         display: flex;
+                        width: 100%;
 
                         .xiao-jiao {
                             width: 6px;
@@ -361,6 +472,7 @@ function inputImg() {
 
                         .content {
                             padding: 10px;
+                            width: 100%;
                             border-radius: 4px;
                             background: white;
                             font-size: 14px;
@@ -385,6 +497,9 @@ function inputImg() {
 
                 .right-content {
                     margin-left: 6px;
+                    max-width: 50%;
+                    white-space: normal;
+                    word-break: break-all;
 
                     .name {
                         font-size: 14px;
