@@ -31,7 +31,7 @@
                             <div class="name">{{ list.name }}</div>
                             <div class="words">
                                 <div class="content">{{ list.content }}</div>
-                                <div class="xiao-jiao"></div>
+                                <!-- <div class="xiao-jiao"></div> -->
                             </div>
                         </div>
                         <img :src="list.avatar" alt="头像" class="avatar">
@@ -52,7 +52,7 @@
                         <div class="right-content">
                             <div class="name">{{ list.name }}</div>
                             <div class="words">
-                                <div class="xiao-jiao"></div>
+                                <!-- <div class="xiao-jiao"></div> -->
                                 <div class="content">{{ list.content }}</div>
                             </div>
                         </div>
@@ -466,20 +466,33 @@ function inputImg() {
                         margin-top: 4px;
                         display: flex;
                         width: 100%;
-
-                        .xiao-jiao {
-                            width: 6px;
-                            background: white;
-                            clip-path: polygon(-4% 70%, -4% 30%, 100% 50%);
-                        }
+                        
+                        // 废弃三角方案
+                        // .xiao-jiao {
+                        //     width: 6px;
+                        //     background: white;
+                        //     clip-path: polygon(-4% 70%, -4% 30%, 100% 50%);
+                        // }
 
                         .content {
+                            position: relative;
+                            margin-right: 8px;
                             padding: 10px;
                             width: 100%;
                             border-radius: 4px;
                             background: white;
                             font-size: 14px;
                             font-weight: 600;
+
+                            &::before {
+                                content: "";
+                                position: absolute;
+                                top: 8px;
+                                right: -8px;
+                                border-left: 10px solid #fff;
+                                border-top: 10px solid transparent;
+                                border-bottom: 10px solid transparent;
+                            }
                         }
                     }
                 }
@@ -513,18 +526,32 @@ function inputImg() {
                         margin-top: 4px;
                         display: flex;
 
-                        .xiao-jiao {
-                            width: 6px;
-                            background: white;
-                            clip-path: polygon(0% 50%, 104% 30%, 104% 70%);
-                        }
+                        // 废弃三角方案
+                        // .xiao-jiao {
+                        // min-width: 6px;
+                        // height: 50px;
+                        // background: white;
+                        // clip-path: polygon(0% 50%, 104% 30%, 104% 70%);
+                        // }
 
                         .content {
+                            position: relative;
+                            margin-left: 8px;
                             padding: 10px;
                             border-radius: 4px;
                             background: white;
                             font-size: 14px;
                             font-weight: 600;
+
+                            &::before {
+                                content: "";
+                                position: absolute;
+                                top: 8px;
+                                left: -8px;
+                                border-right: 10px solid #fff;
+                                border-top: 10px solid transparent;
+                                border-bottom: 10px solid transparent;
+                            }
                         }
                     }
                 }
