@@ -14,14 +14,14 @@
             </div>
         </div>
         <div class="chat-home">
-            <ul v-for="list in chatData" :key="list.id">
+            <ul v-for="list in chatDataList" :key="list.id">
                 <div class="go-time" v-if="list.overTime != undefined">{{ list.overTime }}</div>
                 <li class="my-words" v-if="list.id === 0">
                     <div class="just-img" v-if="list.img != undefined">
                         <div class="left-content">
                             <div class="name">{{ list.name }}</div>
                             <div class="img">
-                                <img :src="list.img" alt="" class="enter-img-in-chat">
+                                <img :src="list.img" alt="头像" class="enter-img-in-chat">
                             </div>
                         </div>
                         <img :src="list.avatar" alt="头像" class="avatar">
@@ -90,7 +90,7 @@
 </template>
 
 <script setup>
-import { computed, nextTick, onMounted, onUnmounted, ref, watch } from "vue";
+import { computed, nextTick, ref, toRaw, watch } from "vue";
 import {
     Power,
     More,
@@ -100,19 +100,14 @@ import {
 } from "@icon-park/vue-next";
 import dropDownOfEmoji from "@/components/dropDown/dropDownOfEmoji.vue"
 const props = defineProps({
+    id: Number,
     isShowChat: Boolean,
     name: String,
 });
+const emit = defineEmits(["getNewChatData", "isRead"]);
 const textInput = ref(null); // textInput dom
 const imgInput = ref(null); // imgInput dom
-const chatData = ref([
-    { id: 1, name: "牢大", content: "孩子们，不要怕", goTime: "2023:12:25 19:23:15", avatar: "https://ts1.cn.mm.bing.net/th/id/R-C.cc73380011599a3ea359c5dbba559d28?rik=tb%2fyu09bRHjEhg&riu=http%3a%2f%2fsource.shop.busionline.com%2f2023-06-10_6484303597478.jpg&ehk=hDPMedrhYgLNPe9M%2bDMnJCyfCzPTdHPZJjGm8xdBcrc%3d&risl=&pid=ImgRaw&r=0" },
-    { id: 1, name: "牢大", content: "孩子们，我回来了", goTime: "2023:12:25 19:23:15", avatar: "https://ts1.cn.mm.bing.net/th/id/R-C.cc73380011599a3ea359c5dbba559d28?rik=tb%2fyu09bRHjEhg&riu=http%3a%2f%2fsource.shop.busionline.com%2f2023-06-10_6484303597478.jpg&ehk=hDPMedrhYgLNPe9M%2bDMnJCyfCzPTdHPZJjGm8xdBcrc%3d&risl=&pid=ImgRaw&r=0" },
-    { id: 1, name: "牢大", content: "孩子们，我回来了", goTime: "2024:1:1 19:14:15", avatar: "https://ts1.cn.mm.bing.net/th/id/R-C.cc73380011599a3ea359c5dbba559d28?rik=tb%2fyu09bRHjEhg&riu=http%3a%2f%2fsource.shop.busionline.com%2f2023-06-10_6484303597478.jpg&ehk=hDPMedrhYgLNPe9M%2bDMnJCyfCzPTdHPZJjGm8xdBcrc%3d&risl=&pid=ImgRaw&r=0" },
-    { id: 1, name: "牢大", content: "孩子们，我回来了,孩子们，我回来了,孩子们，我回来了,孩子们，我回来了", goTime: "2024:1:1 19:24:15", avatar: "https://ts1.cn.mm.bing.net/th/id/R-C.cc73380011599a3ea359c5dbba559d28?rik=tb%2fyu09bRHjEhg&riu=http%3a%2f%2fsource.shop.busionline.com%2f2023-06-10_6484303597478.jpg&ehk=hDPMedrhYgLNPe9M%2bDMnJCyfCzPTdHPZJjGm8xdBcrc%3d&risl=&pid=ImgRaw&r=0" },
-    { id: 1, name: "牢大", content: "孩子们，我回来了", goTime: "2024:1:2 18:23:15", avatar: "https://ts1.cn.mm.bing.net/th/id/R-C.cc73380011599a3ea359c5dbba559d28?rik=tb%2fyu09bRHjEhg&riu=http%3a%2f%2fsource.shop.busionline.com%2f2023-06-10_6484303597478.jpg&ehk=hDPMedrhYgLNPe9M%2bDMnJCyfCzPTdHPZJjGm8xdBcrc%3d&risl=&pid=ImgRaw&r=0" },
-    { id: 1, name: "牢大", content: "孩子们，这不是我", goTime: "2024:1:2 19:11:15", avatar: "https://ts1.cn.mm.bing.net/th/id/R-C.cc73380011599a3ea359c5dbba559d28?rik=tb%2fyu09bRHjEhg&riu=http%3a%2f%2fsource.shop.busionline.com%2f2023-06-10_6484303597478.jpg&ehk=hDPMedrhYgLNPe9M%2bDMnJCyfCzPTdHPZJjGm8xdBcrc%3d&risl=&pid=ImgRaw&r=0" }
-]); // 聊天数据
+const chatDataList = ref([])
 const emoji = ref([
     "😃", "😄", "😁", "😅", "🤣", "😂", "🙂", "🙃", "😇", "🥰", "😍", "😘", "😗", "😋", "🤪", "🤑", "🤭", "🤔", "😒", "😏", "🤥", "😴", "😪", "🤤", "🥵", "🤢", "😵", "😲", "😳", "😮", "😰", "😓", "😭", "😱", "🥱", "😤", "❤", "💔", "💢", "👉", "👈", "🖕", "🤞", "👌", "🤏", "✌", "👊", "🤜", "🤛", "👍", "👎", "💪", "👀", "👂", "👅", "👄", "🙇‍♂️", "🙇‍♀️", "🙅‍♂️", "🙅‍♀️", "🙋‍♂️", "🙋‍♀️", "🤷‍♂️", "🤷‍♀️", "🌹", "🥀", "🌷", "🌸", "🍺", "🍻", "🥂", "🎂", "🍭", "🎂", "🧧", "🎁", "🧨", "🎆", "🚘", "🚔", "🚖", "🚑", "🚌", "🚇", "🚉", "🚆", "🏎", "🏍", "🚲", "🛹", "🦽", "🏳", "🏁", "🏴‍☠️", "🇨🇳", "🐒", "🐷", "🐹", "🐇", "🦔", "🦦", "🦥", "🐣", "🦅", "🦆", "🐢", "🐉", "🐬", "🐡", "🦈", "🐌", "🦋"
 ]); // emoji数据
@@ -124,115 +119,142 @@ const isLoseFocus = ref(true); // 是否丢失焦点
 const isNowRepeatTime = ref(false); // 是否处于重复时间状态
 const repeatTimeTime = ref(0); // 重复次数
 
-onMounted(() => {
-    // 模糊时间
-    function chooseTimeShow() {
-        const nowDate = new Date();
-        const nowTime = nowDate.getTime(); // 分
-        const nowNian = nowDate.getFullYear(); // 年
-        const nowYue = nowDate.getMonth(); // 月
-        const nowRi = nowDate.getDate(); // 日
-        const nowDay = nowDate.getDay(); // 星期
-        for (let i = 0; i < chatData.value.length; i++) {
-            // console.log(chatData.value[i]);
-            // 拆解time，转为date
-            let kakoTime = 0;
-            if (i != 0) {
-                const [nianYueRi, shifenMiao] = chatData.value[i - (repeatTimeTime.value + 1)].goTime.split(" ");
-                const [nian, yue, ri] = nianYueRi.split(":");
-                const [shi, fen, miao] = shifenMiao.split(":");
-                const kakoDate = new Date(nian, yue - 1, ri, shi, fen, miao);
-                kakoTime = kakoDate.getTime(); // 上一个时间戳
-            }
-            const [nianYueRi, shifenMiao] = chatData.value[i].goTime.split(" ");
+// 获取聊天数据
+function getChatData() {
+    let data = JSON.parse(localStorage.getItem("chatData"));
+    for (let i = 0; i < data.length; i++) {
+        chatDataList.value = [...chatDataList.value, data[i]];
+    }
+    // console.log(chatDataList.value);
+}
+
+// 消息沉底
+function toChatListEnd() {
+    let chatDiv = document.querySelector(".chat-home");
+    chatDiv.scrollTop = chatDiv.scrollHeight;
+}
+
+// 模糊时间
+function chooseTimeShow() {
+    const nowDate = new Date();
+    const nowTime = nowDate.getTime(); // 分
+    const nowNian = nowDate.getFullYear(); // 年
+    const nowYue = nowDate.getMonth(); // 月
+    const nowRi = nowDate.getDate(); // 日
+    const nowDay = nowDate.getDay(); // 星期
+    let i = 0;
+    chatDataList.value.forEach(() => {
+        // console.log(chatDataList.value[i]);
+        // 拆解time，转为date
+        let kakoTime = 0;
+        if (i === 0) {
+            i += 1;
+            return;
+        }
+        if (i != 1) {
+            const [nianYueRi, shifenMiao] = chatDataList.value[i - (repeatTimeTime.value + 1)].goTime.split(" ");
             const [nian, yue, ri] = nianYueRi.split(":");
             const [shi, fen, miao] = shifenMiao.split(":");
-            const lastDate = new Date(nian, yue - 1, ri, shi, fen, miao);
-            const lastTime = lastDate.getTime(); // 时间戳
-            const lastNian = lastDate.getFullYear(); // 年
-            const lastYue = lastDate.getMonth(); // 月
-            // 判断是否处于重复状态 10min
-            if (kakoTime != 0 && lastTime - kakoTime <= 1000000) {
-                isNowRepeatTime.value = true;
-                repeatTimeTime.value += 1;
-                continue;
-            } else {
-                repeatTimeTime.value = 0;
-                isNowRepeatTime.value = false;
-            }
-            // 判断是否为刚刚发送 1min
-            if (nowTime - lastTime <= 100000) {
-                chatData.value[i].overTime = "刚刚";
-                continue;
-            }
-            // 判断是否不同年
-            if (nowNian != lastNian) {
-                chatData.value[i].overTime = nian + "年" + yue + "月" + ri + "日" + " " + shi + ":" + fen;
-                continue;
-            }
-            // 判断是否不同月
-            if (nowYue != lastYue) {
-                chatData.value[i].overTime = yue + "月" + ri + "日" + " " + shi + ":" + fen;
-                continue;
-            }
-            // 判断是否同日期或为昨天
-            if (Number(ri) === nowRi) {
-                chatData.value[i].overTime = shi + ":" + fen;
-                // console.log(chatData.value[i]);
-                continue;
-            } else if (Number(ri) === nowRi - 1) {
-                chatData.value[i].overTime = "昨天 " + shi + ":" + fen;
-                continue;
-            }
-            // 判断是否处于同周
-            if (nowRi - Number(ri) <= 6 && nowDay != 0 && nowDay != 1) {
-                switch (ri) {
-                    case "0":
-                        chatData.value[i].overTime = "星期天 " + shi + ":" + fen;
-                        break;
-                    case "1":
-                        chatData.value[i].overTime = "星期一 " + shi + ":" + fen;
-                        break;
-                    case "2":
-                        chatData.value[i].overTime = "星期二 " + shi + ":" + fen;
-                        break;
-                    case "3":
-                        chatData.value[i].overTime = "星期三 " + shi + ":" + fen;
-                        break;
-                    case "4":
-                        chatData.value[i].overTime = "星期四 " + shi + ":" + fen;
-                        break;
-                }
-                continue;
-            } else {
-                chatData.value[i].overTime = ri + "日 " + shi + ":" + fen;
-                continue;
-            }
+            const kakoDate = new Date(nian, yue - 1, ri, shi, fen, miao);
+            kakoTime = kakoDate.getTime(); // 上一个时间戳
         }
-    }
-    chooseTimeShow(); // 加载完成立刻执行一次
-    timer.value = setInterval(chooseTimeShow, 5000); // 定时更新模糊时间
-})
+        const [nianYueRi, shifenMiao] = chatDataList.value[i].goTime.split(" ");
+        const [nian, yue, ri] = nianYueRi.split(":");
+        const [shi, fen, miao] = shifenMiao.split(":");
+        const lastDate = new Date(nian, yue - 1, ri, shi, fen, miao);
+        const lastTime = lastDate.getTime(); // 时间戳
+        const lastNian = lastDate.getFullYear(); // 年
+        const lastYue = lastDate.getMonth(); // 月
+        // 判断是否处于重复状态 10min
+        if (kakoTime != 0 && lastTime - kakoTime <= 1000000) {
+            isNowRepeatTime.value = true;
+            repeatTimeTime.value += 1;
+            i += 1;
+            return;
+        } else {
+            repeatTimeTime.value = 0;
+            isNowRepeatTime.value = false;
+        }
+        // 判断是否为刚刚发送 1min
+        if (nowTime - lastTime <= 100000) {
+            chatDataList.value[i].overTime = "刚刚";
+            i += 1;
+            return;
+        }
+        // 判断是否不同年
+        if (nowNian != lastNian) {
+            chatDataList.value[i].overTime = nian + "年" + yue + "月" + ri + "日" + " " + shi + ":" + fen;
+            i += 1;
+            return;
+        }
+        // 判断是否不同月
+        if (nowYue != lastYue) {
+            chatDataList.value[i].overTime = yue + "月" + ri + "日" + " " + shi + ":" + fen;
+            i += 1;
+            return;
+        }
+        // 判断是否同日期或为昨天
+        if (Number(ri) === nowRi) {
+            chatDataList.value[i].overTime = shi + ":" + fen;
+            // console.log(chatData.value[i]);
+            i += 1;
+            return;
+        } else if (Number(ri) === nowRi - 1) {
+            chatDataList.value[i].overTime = "昨天 " + shi + ":" + fen;
+            i += 1;
+            return;
+        }
+        // 判断是否处于同周
+        if (nowRi - Number(ri) <= 6 && nowDay != 0 && nowDay != 1) {
+            switch (ri) {
+                case "0":
+                    chatDataList.value[i].overTime = "星期天 " + shi + ":" + fen;
+                    break;
+                case "1":
+                    chatDataList.value[i].overTime = "星期一 " + shi + ":" + fen;
+                    break;
+                case "2":
+                    chatDataList.value[i].overTime = "星期二 " + shi + ":" + fen;
+                    break;
+                case "3":
+                    chatDataList.value[i].overTime = "星期三 " + shi + ":" + fen;
+                    break;
+                case "4":
+                    chatDataList.value[i].overTime = "星期四 " + shi + ":" + fen;
+                    break;
+            }
+            i += 1;
+            return;
+        } else {
+            chatDataList.value[i].overTime = ri + "日 " + shi + ":" + fen;
+            i += 1;
+            return;
+        }
+    })
+}
 
-onUnmounted(() => {
-    clearInterval(timer.value); // 销毁定时更新模糊时间
-})
-
+// 监听组件是否打开
 watch(isShowChat, function goToEnd(value) {
     if (value) {
+        getChatData();
+        chooseTimeShow(); // 加载完成立刻执行一次
+        timer.value = setInterval(chooseTimeShow, 5000); // 定时更新模糊时间
+        emit("isRead", true);
         nextTick(() => {
-            let chatDiv = document.querySelector(".chat-home");
-            chatDiv.scrollTop = chatDiv.scrollHeight;
+            toChatListEnd();
         })
+    } else {
+        chatDataList.value = []; // 清除数据
+        clearInterval(timer.value); // 销毁定时更新模糊时间
     }
 })
 
-watch(chatData, () => {
-    setTimeout(() => {
-        let chatDiv = document.querySelector(".chat-home");
-        chatDiv.scrollTop = chatDiv.scrollHeight;
-    }, 500)
+// 新聊天置底
+watch(chatDataList, () => {
+    setTimeout(toChatListEnd, 500)
 })
+
+
 
 // 输入内容检测
 function isAllowGo() {
@@ -265,8 +287,10 @@ function shootWords() {
         } else {
             data.content = textInput.value.textContent;
         }
-        chatData.value = [...chatData.value, data];
+        chatDataList.value = [...chatDataList.value, data];
+        // console.log(chatDataList.value);
         textInput.value.innerHTML = null;
+        emit("getNewChatData", data); // 新消息传值回列表
     }
 }
 // enter键触发方法
@@ -413,7 +437,7 @@ function inputImg() {
 
                 .avatar {
                     margin-top: 4px;
-                    width: 46x;
+                    width: 46px;
                     height: 46px;
                 }
             }
@@ -466,7 +490,7 @@ function inputImg() {
                         margin-top: 4px;
                         display: flex;
                         width: 100%;
-                        
+
                         // 废弃三角方案
                         // .xiao-jiao {
                         //     width: 6px;
