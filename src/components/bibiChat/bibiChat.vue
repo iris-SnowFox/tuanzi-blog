@@ -158,7 +158,7 @@ function searchInChatList() {
         chatDataList.value.forEach(item => {
             let element = item[0];
             if (element.name.includes(searchInput.value.value)) {
-                let arrayList = { name: element.name, isSee: item[0].isSee, content: item[item.length - 1].content, trueIndex: i, avatar: element.avatar };
+                let arrayList = { id: element.id, name: element.name, isSee: item[0].isSee, content: item[item.length - 1].content, trueIndex: i, avatar: element.avatar };
                 searchArray = [...searchArray, arrayList];
             }
             i++;
