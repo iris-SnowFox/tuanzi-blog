@@ -3,7 +3,7 @@
         <div class="title-and-go-back">
             <div class="left-frame">{{ props.name }}</div>
             <div class="right-frame">
-                <div class="control-icon-list">
+                <div class="control-icon-list" @click="happyEndBibiChat">
                     <power theme="multi-color" size="20" :fill="['#2a2a2a', '#ffebef', '#2a2a2a', '#ffffff']"
                         strokeLinejoin="bevel" class="icon-same-style" />
                 </div>
@@ -104,7 +104,7 @@ const props = defineProps({
     isShowChat: Boolean,
     name: String,
 });
-const emit = defineEmits(["getNewChatData", "isRead"]);
+const emit = defineEmits(["getNewChatData", "isRead", "bibiChatClose"]);
 const textInput = ref(null); // textInput dom
 const imgInput = ref(null); // imgInput dom
 const chatDataList = ref([])
@@ -377,6 +377,11 @@ function inputImg() {
         addImgToInput(img);
         imgInput.value.value = "";
     }
+}
+
+// 关闭聊天室
+function happyEndBibiChat() {
+    emit("bibiChatClose");
 }
 </script>
 
