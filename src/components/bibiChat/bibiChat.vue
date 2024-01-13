@@ -1,13 +1,7 @@
 <!-- 聊天室组件 -->
 <template>
-    <div class="neco" ref="necoButtom" @click="bibiChatOpen">
-        <div class="face-and-eyes"></div>
-        <div class="eyebrow-l"></div>
-        <div class="eyebrow-r"></div>
-        <div class="ears"></div>
-        <div class="mouse"></div>
-    </div>
-    <div class="bibi-chat-frame" ref="bibiChatFrame">
+    <div class="bibi-chat-close-style" ref="bibiChatCloseStyle"></div>
+    <div class="bibi-chat-frame" ref="bibiChatFrame" v-if="!isCloseBibiChat">
         <div class="left-siderbar-frame">
             <img src="@/assets/images/avatar/default.png" alt="头像">
             <communication theme="multi-color" size="30" :fill="['#2a2a2a', '#ffebef', '#2a2a2a', '#ffffff']"
@@ -73,14 +67,16 @@
 <script setup>
 import resize from "@/components/resize/resize.vue"
 import chatView from "./chatView.vue";
-import { nextTick, ref } from "vue"
+import { computed, nextTick, ref, watch } from "vue"
 import {
     Communication,
     Search,
     AddThree,
 } from "@icon-park/vue-next";
-
-const necoButtom = ref(null); // necoButtom dom
+const props = defineProps({
+    isOpen: Boolean
+});
+const bibiChatCloseStyle = ref(null); // bibiChatCloseStyle dom
 const bibiChatFrame = ref(null); // bibiChatFrame dom
 const charList = ref(null); // charList dom
 const searchInput = ref(null); // searchInput dom
@@ -90,6 +86,8 @@ const whatList = ref("chatList"); // 列表切换
 const searchChatListData = ref([]); // 搜索聊天列表数据
 const isSearching = ref(false); // 是否正在搜索
 const isShowChat = ref(false); // 是否显示聊天界面
+const isCloseBibiChat = ref(true); // bbChat是否处于关闭
+const isBibiChatOpen = computed(() => { return props.isOpen }); // bibiChat是否打开
 const chatBro = ref(""); // 聊天对象名
 const lastIndex = ref(-1); // 记录上一次点击的下标
 const lastChatTime = ref([]); // 上次聊天时间列表
@@ -126,6 +124,35 @@ const chatDataList = ref([ // 所有聊天数据
         { id: 7, name: "坤坤", content: "全民制作人们大家好", goTime: "2023:12:25 19:23:15", avatar: "https://ts1.cn.mm.bing.net/th/id/R-C.e4fe1a1677f72143432de42d44e85f9f?rik=QNhDoEtIS2Ve3A&riu=http%3a%2f%2finews.gtimg.com%2fnewsapp_match%2f0%2f15103659616%2f0&ehk=gvcKqCFPB5ADv7JtilqqKL%2b1U87peA41C0HCNdeflKc%3d&risl=&pid=ImgRaw&r=0" },
     ]
 ])
+
+// 监听聊天室开启命令
+watch(isBibiChatOpen, () => {
+    if (isCloseBibiChat.value) {
+        isCloseBibiChat.value = false;
+        bibiChatCloseStyle.value.style.width = "50px";
+        bibiChatCloseStyle.value.style.height = "50px";
+        bibiChatCloseStyle.value.style.left = "60%";
+        setTimeout(() => {
+            bibiChatCloseStyle.value.style.left = "50%";
+            bibiChatCloseStyle.value.style.top = "50%";
+        }, 400);
+        setTimeout(() => {
+            bibiChatCloseStyle.value.style.width = "450px";
+            bibiChatCloseStyle.value.style.height = "450px";
+        }, 500);
+        setTimeout(() => {
+            bibiChatCloseStyle.value.style.width = "800px";
+            bibiChatCloseStyle.value.style.borderRadius = "20px";
+        }, 1200);
+        setTimeout(() => {
+            isCloseBibiChat.value = false;
+        }, 2400);
+        setTimeout(() => {
+            bibiChatCloseStyle.value.style.opacity = "0";
+            bibiChatFrame.value.style.opacity = "1";
+        }, 2800);
+    }
+})
 
 // 聊天列表模糊时间
 function changeToFuzzyTime() {
@@ -243,198 +270,35 @@ function isRead(value) {
 
 // 关闭聊天室
 function bibiChatClose() {
-    bibiChatFrame.value.style.top = "80%";
-    setTimeout(() => {
-        bibiChatFrame.value.style.left = "90%";
-        bibiChatFrame.value.style.top = "90%";
-    }, 400);
-    setTimeout(() => {
-        bibiChatFrame.value.style.width = "0px";
-        bibiChatFrame.value.style.height = "0px";
-    }, 500);
+    if (!isCloseBibiChat.value) {
+        isCloseBibiChat.value = true;
+        isShowChat.value = false;
+        nextTick(() => {
+            bibiChatCloseStyle.value.style.opacity = "1";
+        })
+        setTimeout(() => {
+            bibiChatCloseStyle.value.style.borderRadius = "50%";
+            bibiChatCloseStyle.value.style.width = "450px";
+            bibiChatCloseStyle.value.style.height = "450px";
+        }, 200);
+        setTimeout(() => {
+            bibiChatCloseStyle.value.style.width = "50px";
+            bibiChatCloseStyle.value.style.height = "50px";
+            bibiChatCloseStyle.value.style.top = "90%";
+        }, 1200);
+        setTimeout(() => {
+            bibiChatCloseStyle.value.style.width = "0";
+            bibiChatCloseStyle.value.style.height = "0";
+            bibiChatCloseStyle.value.style.left = "92%";
+            bibiChatCloseStyle.value.style.top = "91%";
+        }, 1400);
+    }
 }
-function bibiChatOpen() {
-    bibiChatFrame.value.style.width = "400px";
-    bibiChatFrame.value.style.height = "200px";
-    bibiChatFrame.value.style.left = "60%";
-    setTimeout(() => {
-        bibiChatFrame.value.style.left = "50%";
-        bibiChatFrame.value.style.top = "50%";
-    }, 400);
-    setTimeout(() => {
-        bibiChatFrame.value.style.width = "800px";
-        bibiChatFrame.value.style.height = "450px";
-    }, 500);
-}
+
 </script>
 
 <style lang="scss" scoped>
-.neco {
-    position: fixed;
-    top: 88%;
-    left: 90%;
-    transform: translate(-50%, -50%);
-    width: 160px;
-    height: 120px;
-
-    .face-and-eyes {
-        width: 100%;
-        height: 100%;
-        background: #000;
-        border-radius: 49% 51% 49% 51% / 62% 57% 43% 38%;
-        border: 4px solid black;
-
-        @mixin doubleEyes {
-            position: absolute;
-            content: '';
-            width: 28px;
-            height: 28px;
-            background: #620f21;
-            background: radial-gradient(circle at 10px 8px, #fff 4px, transparent 5px),
-                radial-gradient(circle at 6px 16px, #fff 2px, transparent 3px) rgb(82, 0, 34) no-repeat;
-
-            box-shadow: 0 0 0 6px #ffefef;
-            border-radius: 50%;
-        }
-
-        &::before {
-            @include doubleEyes();
-            left: 30px;
-            top: 32px;
-        }
-
-        &::after {
-            @include doubleEyes();
-            right: 36px;
-            top: 36px;
-        }
-    }
-
-    @mixin eyebrowFrame {
-        position: absolute;
-        width: 18px;
-        height: 4px;
-        border-radius: 100%;
-        border: 2px solid #fff;
-        border-width: 2px 0 0 0;
-    }
-
-    .eyebrow-l {
-        @include eyebrowFrame();
-        left: 44px;
-        top: 12px;
-        transform: rotate(40deg);
-
-        &::before {
-            @include eyebrowFrame();
-            content: '';
-            left: 2px;
-            top: -6px;
-            transform: rotate(16deg);
-        }
-
-        &::after {
-            @include eyebrowFrame();
-            content: '';
-            left: -2px;
-            top: 4px;
-            transform: rotate(-20deg);
-        }
-    }
-
-    .eyebrow-r {
-        @include eyebrowFrame();
-        right: 52px;
-        top: 14px;
-        transform: rotate(-36deg);
-
-        &::before {
-            @include eyebrowFrame();
-            content: '';
-            left: -2px;
-            top: -7px;
-            transform: rotate(-14deg);
-        }
-
-        &::after {
-            @include eyebrowFrame();
-            content: '';
-            left: 2px;
-            top: 4px;
-            transform: rotate(20deg);
-        }
-    }
-
-    .ears {
-        &::before {
-            z-index: -1;
-            position: absolute;
-            top: -22px;
-            left: -20px;
-            content: '';
-            width: 50px;
-            height: 50px;
-            border-radius: 74% 26% 43% 57% / 100% 100% 0% 0%;
-            background-color: #5a2f2f;
-            transform: rotate(-40deg);
-            border: 4px solid #000;
-            border-width: 5px 18px 0 10px;
-            box-shadow: inset 10px -2px 0 #905050,
-                inset 30px -2px 0 #784343;
-        }
-
-        &::after {
-            z-index: -1;
-            position: absolute;
-            top: -20px;
-            right: -32px;
-            content: '';
-            width: 58px;
-            height: 54px;
-            border-radius: 26% 74% 43% 57% / 100% 100% 0% 0%;
-            background-color: #5a2f2f;
-            transform: rotate(40deg);
-            border: 4px solid #000;
-            border-width: 5px 10px 0 18px;
-            box-shadow: inset -10px -2px 0 #905050,
-                inset -30px -2px 0 #784343;
-        }
-    }
-
-    .mouse {
-        position: absolute;
-        top: 66px;
-        left: 40px;
-        width: 60px;
-        height: 40px;
-        background: rgb(166, 44, 77);
-        border-radius: 46% 54% 50% 50% / 34% 30% 70% 66%;
-        overflow: hidden;
-
-        &::before {
-            content: "";
-            position: absolute;
-            top: 24px;
-            width: 60px;
-            height: 24px;
-            background: rgb(185, 103, 125);
-            border-radius: 47% 53% 50% 50% / 71% 71% 29% 29%;
-        }
-
-        &::after {
-            content: "";
-            position: absolute;
-            top: -2px;
-            left: 42px;
-            border-top: 14px solid #ebebeb;
-            border-left: 6px solid transparent;
-            border-right: 6px solid transparent;
-            transform: rotate(12deg);
-        }
-    }
-}
-
-.bibi-chat-frame {
+@mixin bibiChatFrameSameStyle {
     position: fixed;
     top: 50%;
     left: 50%;
@@ -454,6 +318,20 @@ function bibiChatOpen() {
     backdrop-filter: blur(2px);
     overflow: hidden;
     transition: all 1.6s ease;
+}
+
+.bibi-chat-close-style {
+    @include bibiChatFrameSameStyle();
+    top: 92%;
+    left: 91%;
+    width: 0;
+    height: 0;
+    border-radius: 50%
+}
+
+.bibi-chat-frame {
+    @include bibiChatFrameSameStyle();
+    opacity: 0;
 
     .left-siderbar-frame {
         display: flex;

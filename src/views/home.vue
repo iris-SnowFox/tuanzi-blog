@@ -1,6 +1,9 @@
 <template>
     <fontRain :data="dataList"></fontRain>
-    <bibiChat></bibiChat>
+    <cat @click-neco="getClickMessage"></cat>
+    <key></key>
+    <bibiChat :isOpen="isBibiChatOpen"></bibiChat>
+
     <!-- <header>
     </header> -->
     <!-- <main>
@@ -17,6 +20,8 @@
 
 <script setup>
 import fontRain from '@/components/fontRain/fontRain.vue';
+import cat from '../components/blogPet/cat.vue';
+import key from '../components/blogPet/key.vue';
 import bibiChat from '@/components/bibiChat/bibiChat.vue';
 import { useMessage } from '@/utils/message.jsx';
 import { ref } from 'vue';
@@ -37,7 +42,12 @@ const dataList = ref([ // 字数据
     "ご迅速なご回復をお祈りしています",
     "ご健康でいられますように"
 ]);
+const isBibiChatOpen = ref(false); // 是否打开聊天室
 
+// 获取cat的点击事件传值
+function getClickMessage(value) {
+    isBibiChatOpen.value = value;
+}
 
 </script>
 
@@ -46,7 +56,7 @@ header {
     width: 100%;
     border: 4px solid black;
 
-    
+
 }
 
 main {
@@ -54,8 +64,7 @@ main {
     border: 4px solid rgb(196, 192, 192);
 }
 
-aside {
-}
+aside {}
 
 footer {
     width: 100%;
