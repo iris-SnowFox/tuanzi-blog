@@ -68,6 +68,7 @@
 import resize from "@/components/resize/resize.vue"
 import chatView from "./chatView.vue";
 import { computed, nextTick, ref, watch } from "vue"
+import { debounce } from "../../utils/debounce";
 import {
     Communication,
     Search,
@@ -187,7 +188,7 @@ function goToChatList() {
     whatList.value = "chatList";
 }
 // 搜索聊天列表
-function searchInChatList() {
+const searchInChatList = debounce(() => {
     if (searchInput.value.value != "") {
         isSearching.value = true;
         let searchArray = [];
@@ -206,7 +207,7 @@ function searchInChatList() {
         isSearching.value = false;
         searchChatListData.value = [];
     }
-}
+}, 500, true);
 
 function changeBackgroundColor(index) {
     // 清除上次点击触发的背景色

@@ -1,5 +1,5 @@
 <template>
-    <div class="neco" ref="necoButtom" @click="clickCat">
+    <div class="neco" ref="necoButtom" @click="clickCat" @dragenter="dragInCat">
         <div class="face-and-eyes"></div>
         <div class="eyebrow-l"></div>
         <div class="eyebrow-r"></div>
@@ -10,6 +10,7 @@
 
 <script setup>
 import { ref } from "vue";
+import { throttle } from "../../utils/throttle";
 const emit = defineEmits(["clickNeco"])
 const clickMessage = ref(false);
 // 开启聊天室
@@ -17,6 +18,11 @@ function clickCat() {
     emit("clickNeco", clickMessage.value);
     clickMessage.value = !clickMessage.value;
 }
+// 拖拽到猫上
+const dragInCat = throttle((e) => {
+    console.log(e);
+}, 1000);
+
 </script>
 
 <style lang="scss" scoped>

@@ -1,19 +1,71 @@
 <template>
-    <div class="candy" draggable="true">
+    <div class="clone-candy" v-if="isCloneCandyDivOn" ref="cloneCandyDiv"></div>
+    <div class="candy" draggable="true" @dragstart="startGrag" @dragend="dragEndCat" @drag="draging">
         <div class="tape"></div>
         <div class="body"></div>
     </div>
 </template>
 
 <script setup>
+import { nextTick, ref } from "vue";
+import { throttle } from "../../utils/throttle";
+
+const cloneCandyDiv = ref(null); // cloneCandyDiv dom
+
+const cloneCandy = ref(null); // 糖果克隆体
+
+const isCloneCandyDivOn = ref(false); // 糖果克隆体储存div是否开启
+
+// 开始拖拽
+function startGrag(e) {
+    console.log(e);
+    isCloneCandyDivOn.value = true;
+    cloneCandy.value = e.target.cloneNode(true);
+    cloneCandy.value.style = 'position:fixed;left:0;top:0;z-index:999;pointer-events:none;transform:translate( ' + (e.clientX - 60) + 'px ,' + (e.clientY - 40) + 'px);'
+    nextTick(() => {
+        cloneCandyDiv.value.appendChild(cloneCandy.value);
+        e.target.style.opacity = 0;
+    })
+}
+
+// 拖拽中
+const draging = throttle((e) => {
+    // console.log(e);
+    if (cloneCandy.value) {
+        cloneCandy.value.style.transform = 'translate( ' + (e.clientX - 60) + 'px ,' + (e.clientY - 40) + 'px)';
+    }
+}, 10);
+
+// 拖拽鼠标默认样式取消
+document.addEventListener('dragover', function (e) {
+    e.preventDefault();
+    // e.dataTransfer.dropEffect = "move";
+}, false);
+
+// 拖拽结束
+function dragEndCat(e) {
+    // console.log(e);
+    cloneCandyDiv.value.removeChild(cloneCandy.value);
+    isCloneCandyDivOn.value = false;
+    e.target.style.transform = 'translate( ' + (e.clientX - 60) + 'px ,' + (e.clientY - 40) + 'px)';
+    e.target.style.opacity = 1;
+    cloneCandy.value = null;
+}
 </script>
 
 <style lang="scss" scoped>
 .candy {
+    z-index: 999;
+    cursor: pointer;
     position: fixed;
-    top: 10%;
-    left: 10%;
-    transform: translate(-50%, -50%);
+    // top: 10%;
+    // left: 10%;
+    // transform: translate(-50%, -50%);
+    transform: translate(50px, 20px);
+
+    &[dragging] {
+        transform: rotate(50deg);
+    }
 
     .body {
         position: relative;
