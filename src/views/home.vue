@@ -1,8 +1,8 @@
 <template>
     <fontRain :data="dataList"></fontRain>
-    <cat @click-neco="getClickMessage" :message="message"></cat>
+    <cat @click-neco="getClickMessage" @is-open-menu="getOpenMenuMessage" :message="catAteMessage"></cat>
     <key @is-ate="getAteMessage"></key>
-    <blogMenu></blogMenu>
+    <blogMenu :message="menuMessage"></blogMenu>
     <bibiChat :isOpen="isBibiChatOpen"></bibiChat>
 
     <!-- <header>
@@ -45,7 +45,8 @@ const dataList = ref([ // 字数据
     "ご健康でいられますように"
 ]);
 const isBibiChatOpen = ref(false); // 是否打开聊天室
-const message = ref(""); // 是否打开聊天室
+const catAteMessage = ref(""); // 猫咪是否吃到糖
+const menuMessage = ref(""); // 是否打开菜单
 
 // 获取cat的点击事件传值
 function getClickMessage(value) {
@@ -54,7 +55,12 @@ function getClickMessage(value) {
 
 // 获取糖果被吃的消息
 function getAteMessage(value) {
-    message.value = value;
+    catAteMessage.value = value;
+}
+
+// 获取菜单开启消息
+function getOpenMenuMessage(value) {
+    menuMessage.value = value;
 }
 
 </script>

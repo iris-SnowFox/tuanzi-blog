@@ -17,7 +17,7 @@ import { throttle } from "../../utils/throttle";
 const props = defineProps({
     message: String
 })
-const emit = defineEmits(["clickNeco"]);
+const emit = defineEmits(["clickNeco", "isOpenMenu"]);
 
 const necoButtom = ref(null); // necoButtom dom
 const clickMessage = ref(false); // 点击事件开关
@@ -27,6 +27,7 @@ const message = computed(() => { return props.message }); // 外部消息传入
 // 监听传入消息
 watch(message, () => {
     if (message.value === "candyAte") {
+        emit("isOpenMenu", "open");
         necoButtom.value.className = "neco";
     }
 })

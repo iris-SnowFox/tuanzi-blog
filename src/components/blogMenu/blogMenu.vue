@@ -1,5 +1,5 @@
 <template>
-    <div class="menu-frame">
+    <div class="menu-frame" ref="menuFrame">
         <ul>
             <li><span ref="butCai">技术榨菜</span>
                 <div class="font-ball" @mouseenter="mouseInCai" @mouseleave="mouseOutCai">菜</div>
@@ -21,13 +21,25 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { computed, ref, watch } from 'vue';
 
+const props = defineProps({
+    message: String
+})
+
+const menuFrame = ref(null); // menuFrame DOM
 const butCai = ref(null); // butCai DOM
 const butYan = ref(null); // butYan DOM
 const butWu = ref(null); // butWu DOM
 const butZu = ref(null); // butZu DOM
 const butLian = ref(null); // butLian DOM
+const message = computed(() => { return props.message }); // 外部消息传入
+
+watch(message, () => {
+    if (message.value === "open") {
+        menuFrame.value.classList.add("ball-move-anime");
+    }
+})
 
 // 鼠标移动至菜
 function mouseInCai() {
@@ -71,9 +83,23 @@ function mouseOutLian() {
 </script>
 
 <style lang="scss" scoped>
+.ball-move-anime {
+    animation: 2s ease alternate forwards ball-move;
+
+    @keyframes ball-move {
+        0% {
+            right: -50px;
+        }
+
+        100% {
+            right: 50px;
+        }
+    }
+}
+
 .menu-frame {
     position: fixed;
-    right: 40px;
+    right: -50px;
     top: 50%;
     transform: translateY(-50%);
 
@@ -90,6 +116,7 @@ function mouseOutLian() {
             cursor: pointer;
 
             span {
+                position: relative;
                 padding: 6px 12px 6px 12px;
                 border-radius: 2px;
                 background-color: black;
@@ -99,6 +126,16 @@ function mouseOutLian() {
                 font-weight: 500;
                 opacity: 0;
                 transition: opacity 1s ease;
+                &::before {
+                    position: absolute;
+                    top: 10px;
+                    right: -6px;
+                    content: "";
+                    width: 6px;
+                    height: 12px;
+                    background: black;
+                    clip-path: polygon(0 0, 0 100%, 100% 50%);
+                }
             }
 
             .font-ball {
