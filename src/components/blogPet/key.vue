@@ -1,8 +1,9 @@
+<!-- 糖果组件 -->
 <template>
     <div class="clone-candy" v-if="isCloneCandyDivOn" ref="cloneCandyDiv"></div>
-    <div class="candy" draggable="true" @dragstart="startGrag" @dragend="dragEndCat" @drag="draging">
+    <div class="candy" ref="candy" draggable="true" @dragstart="startGrag" @dragend="dragEndCat" @drag="draging">
         <div class="tape"></div>
-        <div class="body"></div>
+        <div class="body" ref="candyBody"></div>
     </div>
 </template>
 
@@ -10,15 +11,22 @@
 import { nextTick, ref } from "vue";
 import { throttle } from "../../utils/throttle";
 
+const emit = defineEmits(["isAte"]);
+
 const cloneCandyDiv = ref(null); // cloneCandyDiv dom
+const candy = ref(null); // candy dom
+const candyBody = ref(null); // candyBody dom
 
 const cloneCandy = ref(null); // 糖果克隆体
+const dragInDiv = ref(null); // 目前拖动到的div
 
 const isCloneCandyDivOn = ref(false); // 糖果克隆体储存div是否开启
 
 // 开始拖拽
 function startGrag(e) {
     console.log(e);
+    e.dataTransfer.setData('candy', 'candy');
+    console.log("id", e.dataTransfer.getData('candy'));
     isCloneCandyDivOn.value = true;
     cloneCandy.value = e.target.cloneNode(true);
     cloneCandy.value.style = 'position:fixed;left:0;top:0;z-index:999;pointer-events:none;transform:translate( ' + (e.clientX - 60) + 'px ,' + (e.clientY - 40) + 'px);'
@@ -36,24 +44,71 @@ const draging = throttle((e) => {
     }
 }, 10);
 
+// 查询当前拖拽到的div
+const dragInWhatDiv = throttle((e) => {
+    dragInDiv.value = document.elementFromPoint(e.clientX, e.clientY);
+    // console.log(dragInDiv.value);
+}, 50)
+
 // 拖拽鼠标默认样式取消
 document.addEventListener('dragover', function (e) {
     e.preventDefault();
+    dragInWhatDiv(e);
     // e.dataTransfer.dropEffect = "move";
 }, false);
 
 // 拖拽结束
 function dragEndCat(e) {
-    // console.log(e);
+    // console.log("end:", e.target);
+    // 总结当前糖果位置并取消克隆体
     cloneCandyDiv.value.removeChild(cloneCandy.value);
     isCloneCandyDivOn.value = false;
     e.target.style.transform = 'translate( ' + (e.clientX - 60) + 'px ,' + (e.clientY - 40) + 'px)';
     e.target.style.opacity = 1;
     cloneCandy.value = null;
+
+    // 判断是否进入可吃范围
+    if (dragInDiv.value.className === "neco-shoot-frame") {
+        // e.draggable = false;
+        candy.value.draggable = false;
+        e.target.style.transform = 'translate(-50%, -50%)';
+        // e.target.style.top = (e.clientX - 60) + 'px';
+        // e.target.style.left = (e.clientY + 60) + 'px';
+        e.target.style.right = (window.innerWidth - e.clientX - 130) + "px";
+        e.target.style.bottom = (window.innerHeight - e.clientY - 100) + "px";
+        setTimeout(() => {
+            e.target.classList.add("candy-animation-ate");
+        }, 200);
+        setTimeout(() => {
+            emit("isAte", "candyAte");
+        }, 2200);
+    }
 }
 </script>
 
 <style lang="scss" scoped>
+.candy-animation-ate {
+    animation: 2s ease forwards eat-it;
+
+    @keyframes eat-it {
+        0% {
+            transform: rotate(0deg);
+        }
+
+        60% {
+            transform: rotate(360deg) scale(0.2);
+            right: 76px;
+            bottom: 20px;
+        }
+
+        100% {
+            right: 76px;
+            bottom: 20px;
+            transform: rotate(720deg) scale(0);
+        }
+    }
+}
+
 .candy {
     z-index: 999;
     cursor: pointer;
@@ -62,10 +117,7 @@ function dragEndCat(e) {
     // left: 10%;
     // transform: translate(-50%, -50%);
     transform: translate(50px, 20px);
-
-    &[dragging] {
-        transform: rotate(50deg);
-    }
+    // transition: bottom 1s ease, right 1s ease;
 
     .body {
         position: relative;

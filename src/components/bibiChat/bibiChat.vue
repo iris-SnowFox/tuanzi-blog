@@ -75,7 +75,7 @@ import {
     AddThree,
 } from "@icon-park/vue-next";
 const props = defineProps({
-    isOpen: Boolean
+    isOpen: Boolean,
 });
 const bibiChatCloseStyle = ref(null); // bibiChatCloseStyle dom
 const bibiChatFrame = ref(null); // bibiChatFrame dom

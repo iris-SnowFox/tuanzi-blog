@@ -1,5 +1,5 @@
 <template>
-    <div class="font-rain" ref="fontRain">
+    <div class="font-rain" ref="fontRain" draggable="false">
         <p v-for="(list, index) in dataAllNum" :key="index" @animationiteration="changeData(index)"
             :class="`font-${index}`"></p>
     </div>

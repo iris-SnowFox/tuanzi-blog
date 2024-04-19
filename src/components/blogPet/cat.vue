@@ -1,36 +1,77 @@
+<!-- 小黑猫组件 -->
 <template>
-    <div class="neco" ref="necoButtom" @click="clickCat" @dragenter="dragInCat">
+    <div class="neco" ref="necoButtom" @click="clickCat">
         <div class="face-and-eyes"></div>
         <div class="eyebrow-l"></div>
         <div class="eyebrow-r"></div>
         <div class="ears"></div>
         <div class="mouse"></div>
     </div>
+    <div class="neco-shoot-frame" @dragenter="dragInCat" @dragleave="dragOutCat"></div>
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { computed, ref, watch } from "vue";
 import { throttle } from "../../utils/throttle";
-const emit = defineEmits(["clickNeco"])
-const clickMessage = ref(false);
+
+const props = defineProps({
+    message: String
+})
+const emit = defineEmits(["clickNeco"]);
+
+const necoButtom = ref(null); // necoButtom dom
+const clickMessage = ref(false); // 点击事件开关
+const dragDiv = ref(null); // 储存正在被拖拽的元素
+const message = computed(() => { return props.message }); // 外部消息传入
+
+// 监听传入消息
+watch(message, () => {
+    if (message.value === "candyAte") {
+        necoButtom.value.className = "neco";
+    }
+})
+
 // 开启聊天室
 function clickCat() {
     emit("clickNeco", clickMessage.value);
     clickMessage.value = !clickMessage.value;
 }
+
 // 拖拽到猫上
 const dragInCat = throttle((e) => {
-    console.log(e);
-}, 1000);
+    // console.log("id", dragId);
+    // console.log(e);
+    necoButtom.value.className = "neco-hope";
+}, 500);
+// 拖拽离开猫猫
+const dragOutCat = throttle((e) => {
+    necoButtom.value.className = "neco-ogoda";
+}, 500)
 
 </script>
 
 <style lang="scss" scoped>
+.neco-shoot-frame {
+    position: fixed;
+    right: 0;
+    bottom: 0;
+    width: 400px;
+    height: 300px;
+    border-top-left-radius: 50%;
+
+    &::before {
+        z-index: 5;
+        content: "";
+        cursor: pointer;
+        width: 100%;
+        height: 100%;
+    }
+}
+
 .neco {
     position: fixed;
-    top: 80%;
-    left: 86%;
-    transform: translate(-50%, -50%);
+    right: 50px;
+    bottom: 30px;
     width: 160px;
     height: 120px;
     animation: 2.8s ease infinite alternate move-body;
@@ -46,80 +87,6 @@ const dragInCat = throttle((e) => {
 
         100% {
             transform: rotate(2deg);
-        }
-    }
-
-    &:hover {
-        animation: 1s ease infinite alternate jump;
-
-        @keyframes jump {
-            0% {
-                transform: translateY(0px);
-            }
-
-            50% {
-                transform: translateY(5px);
-            }
-
-            100% {
-                transform: translateY(-10px);
-            }
-        }
-
-        .face-and-eyes {
-            &::before {
-                animation: 0.1s ease infinite alternate eye-light-run;
-
-                @keyframes eye-light-run {
-                    to {
-                        background: radial-gradient(circle at 11px 7px, #fff 4px, transparent 5px),
-                            radial-gradient(circle at 7px 15px, #fff 2px, transparent 3px) rgb(82, 0, 34) no-repeat;
-                    }
-                }
-            }
-
-            &::after {
-                animation: 0.1s ease infinite alternate eye-light-run;
-
-                @keyframes eye-light-run {
-                    to {
-                        background: radial-gradient(circle at 11px 7px, #fff 4px, transparent 5px),
-                            radial-gradient(circle at 7px 15px, #fff 2px, transparent 3px) rgb(82, 0, 34) no-repeat;
-                    }
-                }
-            }
-        }
-
-        .ears {
-            &::before {
-                animation: 0.1s ease infinite alternate ear-l-move;
-
-                @keyframes ear-l-move {
-                    to {
-                        border-radius: 64% 36% 100% 0% / 100% 100% 0% 0%;
-                    }
-                }
-            }
-
-            &::after {
-                animation: 0.1s ease infinite alternate ear-r-move;
-
-                @keyframes ear-r-move {
-                    to {
-                        border-radius: 34% 66% 100% 0% / 100% 100% 0% 0%;
-                    }
-                }
-            }
-        }
-
-        .mouse {
-            animation: 1s ease infinite alternate mouse-on;
-
-            @keyframes mouse-on {
-                to {
-                    height: 44px;
-                }
-            }
         }
     }
 
@@ -289,6 +256,150 @@ const dragInCat = throttle((e) => {
             border-left: 6px solid transparent;
             border-right: 6px solid transparent;
             transform: rotate(12deg);
+        }
+    }
+}
+
+.neco-hope {
+    @extend .neco;
+    animation: 1s ease infinite alternate jump;
+
+    @keyframes jump {
+        0% {
+            transform: translateY(0px);
+        }
+
+        50% {
+            transform: translateY(5px);
+        }
+
+        100% {
+            transform: translateY(-10px);
+        }
+    }
+
+    .face-and-eyes {
+        &::before {
+            animation: 0.1s ease infinite alternate eye-light-run;
+
+            @keyframes eye-light-run {
+                to {
+                    background: radial-gradient(circle at 11px 7px, #fff 4px, transparent 5px),
+                        radial-gradient(circle at 7px 15px, #fff 2px, transparent 3px) rgb(82, 0, 34) no-repeat;
+                }
+            }
+        }
+
+        &::after {
+            animation: 0.1s ease infinite alternate eye-light-run;
+
+            @keyframes eye-light-run {
+                to {
+                    background: radial-gradient(circle at 11px 7px, #fff 4px, transparent 5px),
+                        radial-gradient(circle at 7px 15px, #fff 2px, transparent 3px) rgb(82, 0, 34) no-repeat;
+                }
+            }
+        }
+    }
+
+    .ears {
+        &::before {
+            animation: 0.1s ease infinite alternate ear-l-move;
+
+            @keyframes ear-l-move {
+                to {
+                    border-radius: 64% 36% 100% 0% / 100% 100% 0% 0%;
+                }
+            }
+        }
+
+        &::after {
+            animation: 0.1s ease infinite alternate ear-r-move;
+
+            @keyframes ear-r-move {
+                to {
+                    border-radius: 34% 66% 100% 0% / 100% 100% 0% 0%;
+                }
+            }
+        }
+    }
+
+    .mouse {
+        animation: 1s ease infinite alternate mouse-on;
+
+        @keyframes mouse-on {
+            to {
+                height: 44px;
+            }
+        }
+    }
+}
+
+.neco-ogoda {
+    @extend .neco;
+    animation-duration: 10ms;
+
+    .ears {
+        &::before {
+            animation: 50ms ease infinite alternate ear-l-move;
+
+            @keyframes ear-l-move {
+                to {
+                    border-radius: 64% 36% 100% 0% / 100% 100% 0% 0%;
+                }
+            }
+        }
+
+        &::after {
+            animation: 50ms ease infinite alternate ear-r-move;
+
+            @keyframes ear-r-move {
+                to {
+                    border-radius: 34% 66% 100% 0% / 100% 100% 0% 0%;
+                }
+            }
+        }
+    }
+
+    .eyebrow-l {
+        transform: rotate(210deg);
+
+        &::before {
+            transform: rotate(-10deg);
+        }
+
+        &::after {
+            transform: rotate(16deg);
+        }
+    }
+
+    .eyebrow-r {
+        transform: rotate(-216deg);
+
+        &::before {
+            transform: rotate(16deg);
+        }
+
+        &::after {
+            transform: rotate(-14deg);
+        }
+    }
+
+    .mouse {
+        top: 66px;
+        left: 60px;
+        width: 20px;
+        height: 20px;
+        background: rgb(166, 44, 77);
+        border-radius: 52% 48% 49% 51% / 85% 86% 14% 15%;
+        overflow: hidden;
+
+        &::before {
+            content: none;
+        }
+
+        &::after {
+            content: none;
         }
     }
 }
