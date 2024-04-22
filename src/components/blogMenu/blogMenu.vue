@@ -2,19 +2,19 @@
     <div class="menu-frame" ref="menuFrame">
         <ul>
             <li><span ref="butCai">技术榨菜</span>
-                <div class="font-ball" @mouseenter="mouseInCai" @mouseleave="mouseOutCai">菜</div>
+                <div class="font-ball" @mouseenter="mouseInCai" @mouseleave="mouseOutCai" @click="openTecPage">菜</div>
             </li>
             <li><span ref="butYan">博客留言</span>
-                <div class="font-ball" @mouseenter="mouseInYan" @mouseleave="mouseOutYan">言</div>
+                <div class="font-ball" @mouseenter="mouseInYan" @mouseleave="mouseOutYan" @click="openMesPage">言</div>
             </li>
             <li><span ref="butWu">关于博主</span>
-                <div class="font-ball" @mouseenter="mouseInWu" @mouseleave="mouseOutWu">吾</div>
+                <div class="font-ball" @mouseenter="mouseInWu" @mouseleave="mouseOutWu" @click="openAboutPage">吾</div>
             </li>
             <li><span ref="butZu">生活足迹</span>
-                <div class="font-ball" @mouseenter="mouseInZu" @mouseleave="mouseOutZu">足</div>
+                <div class="font-ball" @mouseenter="mouseInZu" @mouseleave="mouseOutZu" @click="openLifePage">足</div>
             </li>
             <li><span ref="butLian">友情链接</span>
-                <div class="font-ball" @mouseenter="mouseInLian" @mouseleave="mouseOutLian">链</div>
+                <div class="font-ball" @mouseenter="mouseInLian" @mouseleave="mouseOutLian" @click="openConPage">链</div>
             </li>
         </ul>
     </div>
@@ -26,6 +26,7 @@ import { computed, ref, watch } from 'vue';
 const props = defineProps({
     message: String
 })
+const emit = defineEmits(["openPageMessage"]);
 
 const menuFrame = ref(null); // menuFrame DOM
 const butCai = ref(null); // butCai DOM
@@ -40,6 +41,27 @@ watch(message, () => {
         menuFrame.value.classList.add("ball-move-anime");
     }
 })
+
+// 打开技术榨菜
+function openTecPage() {
+    emit("openPageMessage", "cai");
+}
+// 打开博客留言
+function openMesPage() {
+    emit("openPageMessage", "yan");
+}
+// 打开关于博主
+function openAboutPage() {
+    emit("openPageMessage", "wu");
+}
+// 打开生活足迹
+function openLifePage() {
+    emit("openPageMessage", "zu");
+}
+// 打开友情链接
+function openConPage() {
+    emit("openPageMessage", "lian");
+}
 
 // 鼠标移动至菜
 function mouseInCai() {

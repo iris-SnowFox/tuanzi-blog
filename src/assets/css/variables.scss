@@ -1,5 +1,23 @@
-
 .icon-same-style {
     cursor: pointer;
     border-radius: 50%;
+}
+
+.position-center {
+    @mixin center {
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+    }
+
+    &-fixed {
+        position: fixed;
+        @include center();
+    }
+
+    &-absolute {
+        position: absolute;
+        @include center();
+    }
+
 }

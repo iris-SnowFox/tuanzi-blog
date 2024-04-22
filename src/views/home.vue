@@ -2,7 +2,8 @@
     <fontRain :data="dataList"></fontRain>
     <cat @click-neco="getClickMessage" @is-open-menu="getOpenMenuMessage" :message="catAteMessage"></cat>
     <key @is-ate="getAteMessage"></key>
-    <blogMenu :message="menuMessage"></blogMenu>
+    <blogMenu @openPageMessage="getPageMessage" :message="menuMessage"></blogMenu>
+    <menuToPage @close-message="getCloseMessage" :pageMessage="pageMessage"></menuToPage>
     <bibiChat :isOpen="isBibiChatOpen"></bibiChat>
 
     <!-- <header>
@@ -21,10 +22,11 @@
 
 <script setup>
 import fontRain from '@/components/fontRain/fontRain.vue';
-import cat from '../components/blogPet/cat.vue';
-import key from '../components/blogPet/key.vue';
+import cat from '@/components/blogPet/cat.vue';
+import key from '@/components/blogPet/key.vue';
 import bibiChat from '@/components/bibiChat/bibiChat.vue';
-import blogMenu from '../components/blogMenu/blogMenu.vue';
+import blogMenu from '@/components/blogMenu/blogMenu.vue';
+import menuToPage from '../components/menuToPage/menuToPage.vue';
 import { useMessage } from '@/utils/message.jsx';
 import { ref } from 'vue';
 const dataList = ref([ // 字数据
@@ -47,6 +49,7 @@ const dataList = ref([ // 字数据
 const isBibiChatOpen = ref(false); // 是否打开聊天室
 const catAteMessage = ref(""); // 猫咪是否吃到糖
 const menuMessage = ref(""); // 是否打开菜单
+const pageMessage = ref(""); // 菜单点击事件消息
 
 // 获取cat的点击事件传值
 function getClickMessage(value) {
@@ -61,6 +64,16 @@ function getAteMessage(value) {
 // 获取菜单开启消息
 function getOpenMenuMessage(value) {
     menuMessage.value = value;
+}
+
+// 获取菜单点击事件消息
+function getPageMessage(value) {
+    pageMessage.value = value;
+}
+
+// 获取菜单关闭消息
+function getCloseMessage(value) {
+    pageMessage.value = value;
 }
 
 </script>
