@@ -3,18 +3,21 @@
         <div class="mask" v-show="!isConShow" @click="returnPage" ref="maskDiv"></div>
         <div class="page-all-content" v-show="isConShow">
             <div class="page-intro">
-                <div class="back">◀</div>
+                <div class="back" @click="backMessageGo">◀</div>
                 <div class="page-name">{{ pageName }}</div>
                 <div class="mini" @click="toMini">﹣</div>
                 <div class="over" @click="closePage">×</div>
             </div>
-            <div class="content"></div>
+            <div class="content">
+                <tecPage v-if="pageMessage === 'cai'" :backMessage="backMessage" @getMiniMessage="getMiniMessage"></tecPage>
+            </div>
         </div>
     </div>
 </template>
 
 <script setup>
 import { computed, nextTick, ref, watch } from "vue"
+import tecPage from "./tecPage/tecPage.vue";
 
 const props = defineProps({
     pageMessage: String
@@ -24,6 +27,7 @@ const emit = defineEmits(["closeMessage"]);
 const pageMessage = computed(() => {
     return props.pageMessage;
 }); // 菜单栏点击信息
+const backMessage = ref(false); // 返回点击消息
 
 const pageDiv = ref(null); // pageDiv DOM
 const maskDiv = ref(null); // maskDiv DOM
@@ -34,16 +38,22 @@ const pageName = ref(""); // 本页页名
 
 // 筛选名字方法
 function whatNameOfPage() {
-    if (pageMessage.value === "cai") {
-        pageName.value = "技术榨菜";
-    } else if (pageMessage.value === "yan") {
-        pageName.value = "博客留言";
-    } else if (pageMessage.value === "wu") {
-        pageName.value = "关于博主";
-    } else if (pageMessage.value === "zu") {
-        pageName.value = "生活足迹";
-    } else {
-        pageName.value = "友情链接";
+    switch (pageMessage.value) {
+        case "cai":
+            pageName.value = "技术榨菜";
+            break;
+        case "yan":
+            pageName.value = "博客留言";
+            break;
+        case "wu":
+            pageName.value = "关于博主";
+            break;
+        case "zu":
+            pageName.value = "生活足迹";
+            break;
+        case "lian":
+            pageName.value = "友情链接";
+            break;
     }
 }
 
@@ -93,6 +103,11 @@ watch(pageMessage, () => {
     }
 })
 
+// 返回上一页
+function backMessageGo() {
+    backMessage.value = !backMessage.value;
+}
+
 // 最小化
 function toMini() {
     pageDiv.value.classList.add("page-mini");
@@ -114,7 +129,12 @@ function closePage() {
         pageName.value = "";
         emit("closeMessage", "close");
         isShow.value = false;
-    }, 500);
+    }, 1000);
+}
+
+// 获取最小化信息
+function getMiniMessage() {
+    toMini();
 }
 </script>
 
@@ -331,7 +351,7 @@ function closePage() {
         width: 100%;
         height: 100%;
         color: white;
-        background: black;
+        background: rgba(0, 0, 0, 0.4);
         opacity: 0;
         cursor: pointer;
     }
@@ -372,6 +392,7 @@ function closePage() {
                 @include buttonInIntro();
                 width: max-content;
                 border: 0;
+                cursor: default;
             }
 
             .mini {
@@ -388,6 +409,7 @@ function closePage() {
             flex: 1;
             border: 2px rgb(180, 180, 180) solid;
             border-top: 0px;
+            overflow-y: scroll;
         }
     }
 }

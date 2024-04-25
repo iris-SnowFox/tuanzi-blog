@@ -26,9 +26,11 @@ import cat from '@/components/blogPet/cat.vue';
 import key from '@/components/blogPet/key.vue';
 import bibiChat from '@/components/bibiChat/bibiChat.vue';
 import blogMenu from '@/components/blogMenu/blogMenu.vue';
-import menuToPage from '../components/menuToPage/menuToPage.vue';
+import menuToPage from '@/components/menuToPage/menuToPage.vue';
 import { useMessage } from '@/utils/message.jsx';
-import { ref } from 'vue';
+import { ref, watch } from 'vue';
+import { useMessageState } from '@/stores/message.js';
+
 const dataList = ref([ // 字数据
     "あなたは十分やった",
     "生きて",
@@ -50,10 +52,20 @@ const isBibiChatOpen = ref(false); // 是否打开聊天室
 const catAteMessage = ref(""); // 猫咪是否吃到糖
 const menuMessage = ref(""); // 是否打开菜单
 const pageMessage = ref(""); // 菜单点击事件消息
+const useMessagePinia = useMessageState(); // 获取pinia中存储的项目开启信息
+
+watch(useMessagePinia, () => {
+    console.log(useMessagePinia.openProjectMessage + "open");
+    switch (useMessagePinia.openProjectMessage) {
+        case "bibiChat":
+            isBibiChatOpen.value = true;
+            break;
+    }
+});
 
 // 获取cat的点击事件传值
 function getClickMessage(value) {
-    isBibiChatOpen.value = value;
+    // isBibiChatOpen.value = value;
 }
 
 // 获取糖果被吃的消息
