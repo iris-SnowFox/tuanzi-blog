@@ -8,7 +8,8 @@
                 </li>
             </ul>
         </div>
-        <projectPage :openMessage="isOpenProjectPage" :backMessage="lastBackMessage" @backToBeforePage="backToBeforePage" @getMiniMessage="getMiniMessage">
+        <projectPage :openMessage="isOpenProjectPage" :backMessage="lastBackMessage" @backToBeforePage="backToBeforePage"
+            @getMiniMessage="getMiniMessage">
         </projectPage>
     </div>
 </template>
@@ -54,8 +55,10 @@ function toProjectPage(id) {
             isOpenProjectPage.value = true;
             break;
         case 1:
+            isShowTecPage.value = true;
             break;
         case 2:
+            isShowTecPage.value = true;
             break;
     }
 }

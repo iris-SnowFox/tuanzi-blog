@@ -9,7 +9,8 @@
                 <div class="over" @click="closePage">×</div>
             </div>
             <div class="content">
-                <tecPage v-if="pageMessage === 'cai'" :backMessage="backMessage" @getMiniMessage="getMiniMessage"></tecPage>
+                <tecPage v-if="pageName === '技术榨菜'" :backMessage="backMessage" @getMiniMessage="getMiniMessage"></tecPage>
+                <aboutPage v-if="pageName === '关于博主'"></aboutPage>
             </div>
         </div>
     </div>
@@ -18,6 +19,8 @@
 <script setup>
 import { computed, nextTick, ref, watch } from "vue"
 import tecPage from "./tecPage/tecPage.vue";
+import aboutPage from "./aboutPage/aboutPage.vue";
+import { useMessage } from '@/utils/message.jsx';
 
 const props = defineProps({
     pageMessage: String
@@ -44,15 +47,18 @@ function whatNameOfPage() {
             break;
         case "yan":
             pageName.value = "博客留言";
+            useMessage("warning", "暂未开放");
             break;
         case "wu":
             pageName.value = "关于博主";
             break;
         case "zu":
             pageName.value = "生活足迹";
+            useMessage("warning", "暂未开放");
             break;
         case "lian":
             pageName.value = "友情链接";
+            useMessage("warning", "暂未开放");
             break;
     }
 }
