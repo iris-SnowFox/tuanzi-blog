@@ -11,7 +11,7 @@
 </template>
 
 <script setup>
-import { computed, ref, watch } from "vue";
+import { computed, nextTick, ref, watch } from "vue";
 import { useMessageState } from '@/stores/message.js';
 
 const props = defineProps({
@@ -27,16 +27,6 @@ const useMessagePinia = useMessageState(); // 获取pinia中存储的项目开�
 // 页面数据
 const pageData = ref([
     { id: 0, name: "聊天室", content: "仿wechat聊天界面" },
-    { id: 1, name: "聊天室", content: "仿wechat聊天界面" },
-    { id: 2, name: "聊天室", content: "仿wechat聊天界面" },
-    { id: 3, name: "聊天室", content: "仿wechat聊天界面" },
-    { id: 4, name: "聊天室", content: "仿wechat聊天界面" },
-    { id: 5, name: "聊天室", content: "仿wechat聊天界面" },
-    { id: 6, name: "聊天室", content: "仿wechat聊天界面" },
-    { id: 7, name: "聊天室", content: "仿wechat聊天界面" },
-    { id: 8, name: "聊天室", content: "仿wechat聊天界面" },
-    { id: 9, name: "聊天室", content: "仿wechat聊天界面" },
-    { id: 10, name: "聊天室", content: "仿wechat聊天界面" },
 ])
 
 // 返回消息监控

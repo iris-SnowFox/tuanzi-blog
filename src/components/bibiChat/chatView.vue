@@ -205,21 +205,22 @@ function chooseTimeShow() {
             return;
         }
         // 判断是否处于同周
-        if (nowRi - Number(ri) <= 6 && nowDay != 0 && nowDay != 1) {
-            switch (ri) {
-                case "0":
+        if (nowRi - Number(ri) <= nowDay && nowDay != 0 && nowDay != 1) {
+            const Day = nowDay - (nowRi - Number(ri));
+            switch (Day) {
+                case 0:
                     chatDataList.value[i].overTime = "星期天 " + shi + ":" + fen;
                     break;
-                case "1":
+                case 1:
                     chatDataList.value[i].overTime = "星期一 " + shi + ":" + fen;
                     break;
-                case "2":
+                case 2:
                     chatDataList.value[i].overTime = "星期二 " + shi + ":" + fen;
                     break;
-                case "3":
+                case 3:
                     chatDataList.value[i].overTime = "星期三 " + shi + ":" + fen;
                     break;
-                case "4":
+                case 4:
                     chatDataList.value[i].overTime = "星期四 " + shi + ":" + fen;
                     break;
             }

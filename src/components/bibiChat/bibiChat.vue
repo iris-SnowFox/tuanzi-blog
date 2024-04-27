@@ -77,11 +77,13 @@ import {
 const props = defineProps({
     isOpen: Boolean,
 });
+const emit = defineEmits(["bibiChatNowClosed"]);
 const bibiChatCloseStyle = ref(null); // bibiChatCloseStyle dom
 const bibiChatFrame = ref(null); // bibiChatFrame dom
 const charList = ref(null); // charList dom
 const searchInput = ref(null); // searchInput dom
 const liNoSearch = ref(null); // liNoSearch dom
+
 const leftWidth = ref("200px"); // 聊天列表宽度
 const whatList = ref("chatList"); // 列表切换
 const searchChatListData = ref([]); // 搜索聊天列表数据
@@ -102,15 +104,15 @@ const chatDataList = ref([ // 所有聊天数据
         { id: 1, name: "牢大", content: "孩子们，我回来了", goTime: "2024:1:1 19:14:15", avatar: "https://ts1.cn.mm.bing.net/th/id/R-C.cc73380011599a3ea359c5dbba559d28?rik=tb%2fyu09bRHjEhg&riu=http%3a%2f%2fsource.shop.busionline.com%2f2023-06-10_6484303597478.jpg&ehk=hDPMedrhYgLNPe9M%2bDMnJCyfCzPTdHPZJjGm8xdBcrc%3d&risl=&pid=ImgRaw&r=0" },
         { id: 1, name: "牢大", content: "孩子们，我回来了,孩子们，我回来了,孩子们，我回来了,孩子们，我回来了", goTime: "2024:1:1 19:24:15", avatar: "https://ts1.cn.mm.bing.net/th/id/R-C.cc73380011599a3ea359c5dbba559d28?rik=tb%2fyu09bRHjEhg&riu=http%3a%2f%2fsource.shop.busionline.com%2f2023-06-10_6484303597478.jpg&ehk=hDPMedrhYgLNPe9M%2bDMnJCyfCzPTdHPZJjGm8xdBcrc%3d&risl=&pid=ImgRaw&r=0" },
         { id: 1, name: "牢大", content: "孩子们，我回来了", goTime: "2024:1:2 18:23:15", avatar: "https://ts1.cn.mm.bing.net/th/id/R-C.cc73380011599a3ea359c5dbba559d28?rik=tb%2fyu09bRHjEhg&riu=http%3a%2f%2fsource.shop.busionline.com%2f2023-06-10_6484303597478.jpg&ehk=hDPMedrhYgLNPe9M%2bDMnJCyfCzPTdHPZJjGm8xdBcrc%3d&risl=&pid=ImgRaw&r=0" },
-        { id: 1, name: "牢大", content: "孩子们，这不是我", goTime: "2024:1:4 14:11:15", avatar: "https://ts1.cn.mm.bing.net/th/id/R-C.cc73380011599a3ea359c5dbba559d28?rik=tb%2fyu09bRHjEhg&riu=http%3a%2f%2fsource.shop.busionline.com%2f2023-06-10_6484303597478.jpg&ehk=hDPMedrhYgLNPe9M%2bDMnJCyfCzPTdHPZJjGm8xdBcrc%3d&risl=&pid=ImgRaw&r=0" }
+        { id: 1, name: "牢大", content: "孩子们，这不是我", goTime: "2024:4:27 12:11:15", avatar: "https://ts1.cn.mm.bing.net/th/id/R-C.cc73380011599a3ea359c5dbba559d28?rik=tb%2fyu09bRHjEhg&riu=http%3a%2f%2fsource.shop.busionline.com%2f2023-06-10_6484303597478.jpg&ehk=hDPMedrhYgLNPe9M%2bDMnJCyfCzPTdHPZJjGm8xdBcrc%3d&risl=&pid=ImgRaw&r=0" }
     ], [
         { id: 2, name: "丁真", isSee: true, avatar: "https://x0.ifengimg.com/ucms/2020_49/341F29F5E7EADA81222DE30CE8D313807AB1AA9C_w600_h630.jpg" },
         { id: 2, name: "丁真", content: "我测你", goTime: "2023:12:25 19:23:15", avatar: "https://x0.ifengimg.com/ucms/2020_49/341F29F5E7EADA81222DE30CE8D313807AB1AA9C_w600_h630.jpg" },
         { id: 2, name: "丁真", content: "雪豹闭嘴", goTime: "2023:12:25 19:23:15", avatar: "https://x0.ifengimg.com/ucms/2020_49/341F29F5E7EADA81222DE30CE8D313807AB1AA9C_w600_h630.jpg" },
-        { id: 2, name: "丁真", content: "妈妈省的", goTime: "2024:1:1 19:14:15", avatar: "https://x0.ifengimg.com/ucms/2020_49/341F29F5E7EADA81222DE30CE8D313807AB1AA9C_w600_h630.jpg" },
+        { id: 2, name: "丁真", content: "妈妈省的", goTime: "2024:4:26 12:14:15", avatar: "https://x0.ifengimg.com/ucms/2020_49/341F29F5E7EADA81222DE30CE8D313807AB1AA9C_w600_h630.jpg" },
     ], [
         { id: 3, name: "范小勤", isSee: true, avatar: "https://ts1.cn.mm.bing.net/th/id/R-C.e66e868694dd76aa03fa4973380d1f28?rik=Z44alJXCr8YU3Q&riu=http%3a%2f%2fwww.daheyuqing.com%2fupload%2fueditor%2fphp%2fupload%2fimage%2f20210302%2f1614649000143504.jpg&ehk=oiF0e4ncelAGXa4upHU0S1nacBLElUPklWfixUwcC3w%3d&risl=&pid=ImgRaw&r=0" },
-        { id: 3, name: "范小勤", content: "阿里，阿里巴巴", goTime: "2023:12:25 19:23:15", avatar: "https://ts1.cn.mm.bing.net/th/id/R-C.e66e868694dd76aa03fa4973380d1f28?rik=Z44alJXCr8YU3Q&riu=http%3a%2f%2fwww.daheyuqing.com%2fupload%2fueditor%2fphp%2fupload%2fimage%2f20210302%2f1614649000143504.jpg&ehk=oiF0e4ncelAGXa4upHU0S1nacBLElUPklWfixUwcC3w%3d&risl=&pid=ImgRaw&r=0" },
+        { id: 3, name: "范小勤", content: "阿里，阿里巴巴", goTime: "2024:4:24 19:23:15", avatar: "https://ts1.cn.mm.bing.net/th/id/R-C.e66e868694dd76aa03fa4973380d1f28?rik=Z44alJXCr8YU3Q&riu=http%3a%2f%2fwww.daheyuqing.com%2fupload%2fueditor%2fphp%2fupload%2fimage%2f20210302%2f1614649000143504.jpg&ehk=oiF0e4ncelAGXa4upHU0S1nacBLElUPklWfixUwcC3w%3d&risl=&pid=ImgRaw&r=0" },
     ], [
         { id: 4, name: "战鹰", isSee: true, avatar: "https://www.cioinsight.com.cn/uploads/images/20230201/20230201132116_96864.png" },
         { id: 4, name: "战鹰", content: "啾啾啾，小飞棍来咯~", goTime: "2023:12:25 19:23:15", avatar: "https://www.cioinsight.com.cn/uploads/images/20230201/20230201132116_96864.png" },
@@ -128,31 +130,29 @@ const chatDataList = ref([ // 所有聊天数据
 
 // 监听聊天室开启命令
 watch(isBibiChatOpen, () => {
-    if (isCloseBibiChat.value) {
+    isCloseBibiChat.value = false;
+    bibiChatCloseStyle.value.style.width = "50px";
+    bibiChatCloseStyle.value.style.height = "50px";
+    bibiChatCloseStyle.value.style.left = "60%";
+    setTimeout(() => {
+        bibiChatCloseStyle.value.style.left = "50%";
+        bibiChatCloseStyle.value.style.top = "50%";
+    }, 400);
+    setTimeout(() => {
+        bibiChatCloseStyle.value.style.width = "450px";
+        bibiChatCloseStyle.value.style.height = "450px";
+    }, 500);
+    setTimeout(() => {
+        bibiChatCloseStyle.value.style.width = "800px";
+        bibiChatCloseStyle.value.style.borderRadius = "20px";
+    }, 1200);
+    setTimeout(() => {
         isCloseBibiChat.value = false;
-        bibiChatCloseStyle.value.style.width = "50px";
-        bibiChatCloseStyle.value.style.height = "50px";
-        bibiChatCloseStyle.value.style.left = "60%";
-        setTimeout(() => {
-            bibiChatCloseStyle.value.style.left = "50%";
-            bibiChatCloseStyle.value.style.top = "50%";
-        }, 400);
-        setTimeout(() => {
-            bibiChatCloseStyle.value.style.width = "450px";
-            bibiChatCloseStyle.value.style.height = "450px";
-        }, 500);
-        setTimeout(() => {
-            bibiChatCloseStyle.value.style.width = "800px";
-            bibiChatCloseStyle.value.style.borderRadius = "20px";
-        }, 1200);
-        setTimeout(() => {
-            isCloseBibiChat.value = false;
-        }, 2400);
-        setTimeout(() => {
-            bibiChatCloseStyle.value.style.opacity = "0";
-            bibiChatFrame.value.style.opacity = "1";
-        }, 2800);
-    }
+    }, 2400);
+    setTimeout(() => {
+        bibiChatCloseStyle.value.style.opacity = "0";
+        bibiChatFrame.value.style.opacity = "1";
+    }, 2800);
 })
 
 // 聊天列表模糊时间
@@ -168,11 +168,34 @@ function changeToFuzzyTime() {
         const day = dateArray[0].split(":")[2];
         const shi = dateArray[1].split(":")[0];
         const fen = dateArray[1].split(":")[1];
-        if (day != nowDate.getDate()) {
-            lastChatTime.value = [...lastChatTime.value, year + "/" + month + "/" + day];
+        if (Number(day) === nowDate.getDate()) {
+            lastChatTime.value = [...lastChatTime.value, shi + ":" + fen];
+            return;
+        } else if (Number(year) === nowDate.getFullYear() && (Number(month) === nowDate.getMonth() + 1) && nowDate.getDate() - Number(day) === 1) {
+            lastChatTime.value = [...lastChatTime.value, "昨天"];
+            return;
+        } else if (Number(year) === nowDate.getFullYear() && (Number(month) === nowDate.getMonth() + 1) && nowDate.getDate() - Number(day) <= nowDate.getDay() && nowDate.getDay() != 0 && nowDate.getDay() != 1) {
+            const Day = nowDate.getDay() - (nowDate.getDate() - Number(day));
+            switch (Day) {
+                case 0:
+                    lastChatTime.value = [...lastChatTime.value, "星期天"];
+                    break;
+                case 1:
+                    lastChatTime.value = [...lastChatTime.value, "星期一"];
+                    break;
+                case 2:
+                    lastChatTime.value = [...lastChatTime.value, "星期二"];
+                    break;
+                case 3:
+                    lastChatTime.value = [...lastChatTime.value, "星期三"];
+                    break;
+                case 4:
+                    lastChatTime.value = [...lastChatTime.value, "星期四"];
+                    break;
+            }
             return;
         } else {
-            lastChatTime.value = [...lastChatTime.value, shi + ":" + fen];
+            lastChatTime.value = [...lastChatTime.value, year + "/" + month + "/" + day];
             return;
         }
     });
@@ -273,6 +296,7 @@ function isRead(value) {
 function bibiChatClose() {
     if (!isCloseBibiChat.value) {
         isCloseBibiChat.value = true;
+        // emit("bibiChatNowClosed");
         isShowChat.value = false;
         nextTick(() => {
             bibiChatCloseStyle.value.style.opacity = "1";

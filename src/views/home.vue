@@ -4,7 +4,7 @@
     <key @is-ate="getAteMessage"></key>
     <blogMenu @openPageMessage="getPageMessage" :message="menuMessage"></blogMenu>
     <menuToPage @close-message="getCloseMessage" :pageMessage="pageMessage"></menuToPage>
-    <bibiChat :isOpen="isBibiChatOpen"></bibiChat>
+    <bibiChat :isOpen="isBibiChatOpen" @bibiChatNowClosed="bibiChatNowClosed"></bibiChat>
 
     <!-- <header>
     </header> -->
@@ -54,12 +54,16 @@ const menuMessage = ref(""); // 是否打开菜单
 const pageMessage = ref(""); // 菜单点击事件消息
 const useMessagePinia = useMessageState(); // 获取pinia中存储的项目开启信息
 
-watch(useMessagePinia, () => {
-    console.log(useMessagePinia.openProjectMessage + "open");
-    switch (useMessagePinia.openProjectMessage) {
-        case "bibiChat":
-            isBibiChatOpen.value = true;
-            break;
+// 监听pinia状态获取打开项目消息
+watch(() => useMessagePinia.openProjectMessage, (newVal, oldVal) => {
+    if (newVal !== "") {
+        console.log(newVal + " open");
+        switch (newVal) {
+            case "bibiChat":
+                isBibiChatOpen.value = !isBibiChatOpen.value;
+                break;
+        }
+        useMessagePinia.openProjectMessage = "";
     }
 });
 
@@ -88,14 +92,16 @@ function getCloseMessage(value) {
     pageMessage.value = value;
 }
 
+// 聊天室已关闭更新控制键
+function bibiChatNowClosed() {
+    // isBibiChatOpen.value = false;
+}
 </script>
 
 <style lang="scss" scoped>
 header {
     width: 100%;
     border: 4px solid black;
-
-
 }
 
 main {
