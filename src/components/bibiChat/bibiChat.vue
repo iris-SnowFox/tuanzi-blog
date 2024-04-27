@@ -133,10 +133,10 @@ watch(isBibiChatOpen, () => {
     isCloseBibiChat.value = false;
     bibiChatCloseStyle.value.style.width = "50px";
     bibiChatCloseStyle.value.style.height = "50px";
-    bibiChatCloseStyle.value.style.left = "60%";
+    bibiChatCloseStyle.value.style.right = "40%";
     setTimeout(() => {
-        bibiChatCloseStyle.value.style.left = "50%";
-        bibiChatCloseStyle.value.style.top = "50%";
+        bibiChatCloseStyle.value.style.right = "50%";
+        bibiChatCloseStyle.value.style.bottom = "50%";
     }, 400);
     setTimeout(() => {
         bibiChatCloseStyle.value.style.width = "450px";
@@ -309,13 +309,13 @@ function bibiChatClose() {
         setTimeout(() => {
             bibiChatCloseStyle.value.style.width = "50px";
             bibiChatCloseStyle.value.style.height = "50px";
-            bibiChatCloseStyle.value.style.top = "90%";
+            bibiChatCloseStyle.value.style.bottom = "10%";
         }, 1200);
         setTimeout(() => {
             bibiChatCloseStyle.value.style.width = "0";
             bibiChatCloseStyle.value.style.height = "0";
-            bibiChatCloseStyle.value.style.left = "92%";
-            bibiChatCloseStyle.value.style.top = "91%";
+            bibiChatCloseStyle.value.style.right = "140px";
+            bibiChatCloseStyle.value.style.bottom = "60px";
         }, 1400);
     }
 }
@@ -325,9 +325,9 @@ function bibiChatClose() {
 <style lang="scss" scoped>
 @mixin bibiChatFrameSameStyle {
     position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
+    right: 50%;
+    bottom: 50%;
+    transform: translate(50%, 50%);
     display: flex;
     width: 800px;
     height: 450px;
@@ -347,8 +347,8 @@ function bibiChatClose() {
 
 .bibi-chat-close-style {
     @include bibiChatFrameSameStyle();
-    top: 92%;
-    left: 91%;
+    right: 140px;
+    bottom: 60px;
     width: 0;
     height: 0;
     border-radius: 50%
