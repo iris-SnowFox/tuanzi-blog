@@ -77,7 +77,7 @@ function changeData(index) {
         white-space: pre-wrap;
         transition: all 0.3s linear;
         transform: translateY(-10vh);
-        color: #eba0b3;
+        color: #492a8880;
         text-shadow: 0 0 1px #fff, 0 0 2px #fff, 0 0 4px currentColor, 0 0 8px currentColor;
     }
 

@@ -1,4 +1,5 @@
 <template>
+    <background></background>
     <fontRain :data="dataList"></fontRain>
     <cat @click-neco="getClickMessage" @is-open-menu="getOpenMenuMessage" :message="catAteMessage"></cat>
     <key @is-ate="getAteMessage"></key>
@@ -21,6 +22,7 @@
 </template>
 
 <script setup>
+import background from '../components/backGround/background.vue';
 import fontRain from '@/components/fontRain/fontRain.vue';
 import cat from '@/components/blogPet/cat.vue';
 import key from '@/components/blogPet/key.vue';
