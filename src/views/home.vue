@@ -6,6 +6,7 @@
     <blogMenu @openPageMessage="getPageMessage" :message="menuMessage"></blogMenu>
     <menuToPage @close-message="getCloseMessage" :pageMessage="pageMessage"></menuToPage>
     <bibiChat :isOpen="isBibiChatOpen" @bibiChatNowClosed="bibiChatNowClosed"></bibiChat>
+    <div class="to-docs" @click="goToDocs">介绍文档</div>
 
     <!-- <header>
     </header> -->
@@ -22,7 +23,7 @@
 </template>
 
 <script setup>
-import background from '../components/backGround/background.vue';
+import background from '@/components/backGround/background.vue';
 import fontRain from '@/components/fontRain/fontRain.vue';
 import cat from '@/components/blogPet/cat.vue';
 import key from '@/components/blogPet/key.vue';
@@ -98,6 +99,11 @@ function getCloseMessage(value) {
 function bibiChatNowClosed() {
     // isBibiChatOpen.value = false;
 }
+
+// 前往文档
+function goToDocs() {
+    location.replace("http://localhost:5500/");
+}
 </script>
 
 <style lang="scss" scoped>
@@ -116,5 +122,19 @@ aside {}
 footer {
     width: 100%;
     border: 4px solid black;
+}
+
+.to-docs {
+    position: fixed;
+    top: 10px;
+    right: 20px;
+    font-size: 18px;
+    font-weight: 600;
+    cursor: pointer;
+    color: black;
+    transition: all 0.5s ease;
+    &:hover {
+        color: rgb(126, 28, 48);
+    }
 }
 </style>

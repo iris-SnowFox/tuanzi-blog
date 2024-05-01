@@ -26,13 +26,18 @@ export default defineConfig({
   // network
   server: {
     host: true, // 监听所有地址
-    // proxy: { // 跨域
-    //   '/api': {
-    //     target: 'http://api.example.com',
-    //     changeOrigin: true,
-    //     rewrite: (path) => path.replace(/^\/api/, '')
-    //   }
-    // }, 
+    proxy: { // 跨域
+      // '/api': {
+      //   target: 'http://api.example.com',
+      //   changeOrigin: true,
+      //   rewrite: (path) => path.replace(/^\/api/, '')
+      // }
+      '/docs': {
+        target: 'http://localhost:5500', // 假设 VitePress 开发服务器运行在 3001 端口  
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/docs/, '')
+      }
+    },
     static: {
       directory: [
         {
