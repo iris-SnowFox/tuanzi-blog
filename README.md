@@ -1,4 +1,6 @@
-# tuanzi-blog
+# a blog!
+
+Its a blog just for study tec.
 
 This template should help get you started developing with Vue 3 in Vite.
 
@@ -20,10 +22,12 @@ yarn
 
 ```sh
 yarn dev
+yarn docs:dev
 ```
 
 ### Compile and Minify for Production
 
 ```sh
 yarn build
+yarn docs:build
 ```
