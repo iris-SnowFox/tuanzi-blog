@@ -1,29 +1,23 @@
-# tuanzi-blog
+# 一个个人技术博客（仅前端）
 
-This template should help get you started developing with Vue 3 in Vite.
+## 项目内容
+该项目目前包括vue3+vite的一个单页面博客和vitepress写的一个文档，具体描述详见文档。
 
-## Recommended IDE Setup
-
-[VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur) + [TypeScript Vue Plugin (Volar)](https://marketplace.visualstudio.com/items?itemName=Vue.vscode-typescript-vue-plugin).
-
-## Customize configuration
-
-See [Vite Configuration Reference](https://vitejs.dev/config/).
-
-## Project Setup
-
+## 如何进行：项目，启动！
 ```sh
-yarn
+npm run dev // 博客，启动！
+npm run docs:dev // 文档，启动！
+// 或
+yarn dev // 博客，启动！
+yarn docs:dev // 文档，启动！
 ```
 
-### Compile and Hot-Reload for Development
+## 如何进行：项目，打包！
 
 ```sh
-yarn dev
-```
-
-### Compile and Minify for Production
-
-```sh
-yarn build
+npm run build // 博客，启动！
+npm run docs:build // 文档，启动！
+// 或
+yarn build // 博客，启动！
+yarn docs:build // 文档，启动！
 ```
