@@ -15,9 +15,9 @@ yarn docs:dev // 文档，启动！
 ## 如何进行：项目，打包！
 
 ```sh
-npm run build // 博客，启动！
-npm run docs:build // 文档，启动！
+npm run build // 博客，打包！
+npm run docs:build // 文档，打包！
 // 或
-yarn build // 博客，启动！
-yarn docs:build // 文档，启动！
+yarn build // 博客，打包！
+yarn docs:build // 文档，打包！
 ```
